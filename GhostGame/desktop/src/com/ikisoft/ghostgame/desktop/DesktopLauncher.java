@@ -7,8 +7,8 @@ import com.ikisoft.ghostgame.GhostGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 270;
-		config.height = 480;
+		config.width = 270 * 2;
+		config.height = 480 * 2;
 		config.foregroundFPS = 60;
 
 		new LwjglApplication(new GhostGame(), config);

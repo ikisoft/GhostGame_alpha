@@ -19,7 +19,8 @@ public class AssetLoader {
 
 
     public static Animation<TextureRegion> ghostAnimation;
-    public static TextureRegion background, backMountain, frontMountain, ghost1, ghost2, ghost3, shadow;
+    public static TextureRegion background, backMountain, frontMountain, ghost1, ghost2, ghost3,
+            shadow, mob1;
     public static Texture texture;
 
     public static void load(){
@@ -34,6 +35,7 @@ public class AssetLoader {
         ghost2 = new TextureRegion(texture, 1166, 0, 85, 119);
         ghost3 = new TextureRegion(texture, 1252, 0, 85, 119);
         shadow = new TextureRegion(texture, 1338, 0, 83, 25);
+        mob1 = new TextureRegion(texture, 1080, 239, 85, 85);
         TextureRegion[] ghosts = {ghost1, ghost2, ghost3};
         ghostAnimation = new Animation(0.3f, ghosts);
         ghostAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
