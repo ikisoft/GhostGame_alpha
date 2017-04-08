@@ -19,7 +19,7 @@ public class GhostGame extends Game {
 		renderer = new GameRenderer(world);
 
 		//Gdx.input.setInputProcessor(new InputHandler(world.ghost));
-		Gdx.input.setInputProcessor(new GestureDetector(new GestureHandler(world.ghost)));
+		Gdx.input.setInputProcessor(new GestureDetector(new GestureHandler(world.getGhost())));
 
 
 
@@ -46,7 +46,9 @@ public class GhostGame extends Game {
 
 	@Override
 	public void dispose() {
+		super.dispose();
 		renderer.dispose();
+		assetLoader.dispose();
 
 	}
 

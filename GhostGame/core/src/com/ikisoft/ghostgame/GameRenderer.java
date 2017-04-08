@@ -7,8 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.physics.box2d.World;
-import com.ikisoft.ghostgame.GameObjects.NormalMob;
+import com.ikisoft.ghostgame.GameObjects.Mob;
 
 /**
  * Created by Max on 2.4.2017.
@@ -27,14 +26,15 @@ public class GameRenderer {
     private  GameWorld gameWorld;
     private ShapeRenderer shapeRenderer;
     private BitmapFont font = new BitmapFont();
-    private NormalMob normalMob;
+    private Mob mob;
+
 
 
 
     public GameRenderer(GameWorld world) {
 
         gameWorld = world;
-        normalMob = gameWorld.getNormalMob();
+        mob = gameWorld.getMob();
         runTime = 0;
         cam = new OrthographicCamera(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
         cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
@@ -61,12 +61,23 @@ public class GameRenderer {
         batch.enableBlending();
         drawBackMountain(delta);
         drawFrontMountain(delta);
+        drawSpike(delta);
         drawGhostShadow(delta);
         drawMobShadow(delta);
         drawGhost(runTime);
         batch.disableBlending();
         drawMob();
         batch.end();
+
+        //TEST CODE HERE
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(1, 0, 0, 1);
+        shapeRenderer.rect(gameWorld.getSpike().getHitbox().x,
+                gameWorld.getSpike().getHitbox().y,
+                gameWorld.getSpike().getHitbox().getWidth(),
+                gameWorld.getSpike().getHitbox().getHeight());
+        shapeRenderer.end();
+
 
         //draw font
         //for testing and shit lol
@@ -79,15 +90,19 @@ public class GameRenderer {
         batch.end();
     }
 
+    private void drawSpike(float delta) {
+        batch.draw(AssetLoader.spike, gameWorld.getSpike().getPositionX(), 527);
+    }
+
     private void drawMobShadow(float delta) {
-        batch.setColor(1.0f, 1.0f, 1.0f, 0.5f * (560 / gameWorld.getNormalMob().getY()));
-        batch.draw(AssetLoader.shadow, gameWorld.getNormalMob().getX(), 527);
+        batch.setColor(1.0f, 1.0f, 1.0f, 0.5f * (560 / gameWorld.getMob().getY()));
+        batch.draw(AssetLoader.shadow, gameWorld.getMob().getX(), 527);
     }
 
     private void drawMob() {
         //draw mob
         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
-        batch.draw(AssetLoader.mob1, normalMob.getX(), normalMob.getY());
+        batch.draw(AssetLoader.mob1, mob.getX(), mob.getY());
     }
 
     private void drawGhost(float runTime) {

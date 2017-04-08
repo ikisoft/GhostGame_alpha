@@ -1,6 +1,7 @@
 package com.ikisoft.ghostgame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,8 +21,9 @@ public class AssetLoader {
 
     public static Animation<TextureRegion> ghostAnimation;
     public static TextureRegion background, backMountain, frontMountain, ghost1, ghost2, ghost3,
-            shadow, mob1;
+            shadow, mob1, spike;
     public static Texture texture;
+    public static Sound dead, spook, jump;
 
     public static void load(){
 
@@ -36,10 +38,22 @@ public class AssetLoader {
         ghost3 = new TextureRegion(texture, 1252, 0, 85, 119);
         shadow = new TextureRegion(texture, 1338, 0, 83, 25);
         mob1 = new TextureRegion(texture, 1080, 239, 85, 85);
+        spike = new TextureRegion(texture, 1422, 394, 85, 390);
         TextureRegion[] ghosts = {ghost1, ghost2, ghost3};
         ghostAnimation = new Animation(0.3f, ghosts);
         ghostAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        dead = Gdx.audio.newSound(Gdx.files.internal("sounds/dead.wav"));
+        jump = Gdx.audio.newSound(Gdx.files.internal("sounds/jump.wav"));
+        spook = Gdx.audio.newSound(Gdx.files.internal("sounds/spook.wav"));
 
+
+    }
+
+    public static void dispose(){
+        texture.dispose();
+        dead.dispose();
+        jump.dispose();
+        spook.dispose();
     }
 
 }

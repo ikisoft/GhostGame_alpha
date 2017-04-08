@@ -2,6 +2,7 @@ package com.ikisoft.ghostgame.GameObjects;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.ikisoft.ghostgame.AssetLoader;
 
 /**
  * Created by Max on 2.4.2017.
@@ -50,7 +51,7 @@ public class Ghost {
 
         //x pos - Spook
 
-        velocityX -= gravity * delta;
+        velocityX -= 2 * delta;
         if (velocityX < -20) velocityX = -20;
 
         position.x += velocityX * delta;
@@ -64,22 +65,22 @@ public class Ghost {
         if (position.x < 85) {
             position.x = 85;
             hitbox.x = 85;
-
-
         }
     }
 
 
     public void onClick() {
+        if(!isSpooking){
+            if (jumpCount <= 1 && canJump) {
+                jump();
+                jumpCount++;
 
-        if (jumpCount <= 1 && canJump) {
-            jump();
-            jumpCount++;
-
-        } else {
-            jumpCount = 0;
-            canJump = false;
+            } else {
+                jumpCount = 0;
+                canJump = false;
+            }
         }
+
     }
 
     public void onFling() {
@@ -91,14 +92,16 @@ public class Ghost {
 
     public void jump() {
 
+        AssetLoader.jump.play();
         velocityY = 20;
-
+        velocityX = 0;
     }
 
     public void spook() {
 
-        velocityX = 20;
-        velocityY = 7;
+        AssetLoader.spook.play();
+        velocityX = 30;
+        velocityY = 4;
     }
 
     public void die(){

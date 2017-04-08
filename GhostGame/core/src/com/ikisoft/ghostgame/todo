@@ -1,2 +1,5 @@
-add ghost.spook x + incremental movement
-fix front mountain twitching
+add ghost.spook x + incremental movement/done
+fix front mountain twitching/done
+Spike could be one texture and it could cover behind ground texture
+Fix spike hitbox and render issues
+
