@@ -11,33 +11,16 @@ import com.ikisoft.ghostgame.GameObjects.Ghost;
 
 public class InputHandler implements InputProcessor {
 
-    private Ghost ghost;
-    private boolean dragged;
-    private boolean touchedDown;
 
-        public InputHandler(Ghost ghost){
+    public InputHandler() {
 
-            this.ghost = ghost;
-            dragged = false;
-            touchedDown = false;
 
-        }
+    }
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-            touchedDown = true;
-            if(!dragged && touchedDown){
-                Gdx.app.log("TouchDown: ", "Touched");
-
-                ghost.onClick();
-
-
-            }
-
-
-            return false;
-
-
+        return false;
 
     }
 
@@ -60,22 +43,12 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-        if(!dragged){
-            Gdx.app.log("TouchDown: ", "Touched");
-
-            ghost.onClick();
-
-        }
-        dragged = false;
-
-
         return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        dragged = true;
-        System.out.println("Dragged");
+
 
         return true;
 

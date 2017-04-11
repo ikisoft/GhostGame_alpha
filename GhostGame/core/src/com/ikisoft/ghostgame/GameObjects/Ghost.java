@@ -35,13 +35,13 @@ public class Ghost {
         isSpooking = false;
         //Y pos, jump etc.
         velocityY -= gravity * delta;
-        if (velocityY < -20) velocityY = -20;
+        //if (velocityY < -20) velocityY = -20;
         position.y += velocityY * delta;
-        hitbox.y += velocityY * delta;
+        hitbox.y = position.y;
 
         if (position.y < 560) {
             position.y = 560;
-            hitbox.y = 560;
+            hitbox.y = position.y;
         }
 
         if (position.y == 560) {
@@ -55,7 +55,7 @@ public class Ghost {
         if (velocityX < -20) velocityX = -20;
 
         position.x += velocityX * delta;
-        hitbox.x += velocityX * delta;
+        hitbox.x = position.x;
 
         if (position.x > 85) {
             isSpooking = true;
@@ -64,7 +64,18 @@ public class Ghost {
 
         if (position.x < 85) {
             position.x = 85;
-            hitbox.x = 85;
+            hitbox.x = position.x;
+        }
+    }
+
+    public void updateDead(float delta){
+
+        canJump = false;
+        velocityY -= gravity * delta;
+        position.y += velocityY * delta;
+        hitbox.y = position.y;
+        if (position.y < -500){
+            position.y = -500;
         }
     }
 
@@ -85,7 +96,7 @@ public class Ghost {
 
     public void onFling() {
 
-        if (position.x == 85) {
+        if (position.x == 85 && isAlive) {
             spook();
         }
     }
@@ -108,9 +119,13 @@ public class Ghost {
         //velocityY = 0;
         System.out.println("u died");
         isAlive = false;
+        velocityY = 10;
+
+
     }
 
-    public void restart(float x, float y){
+    public void reset(float x, float y){
+        velocityX = 0;
         jumpCount = 0;
         canJump = true;
         isSpooking = false;
@@ -135,6 +150,10 @@ public class Ghost {
 
     public boolean getIsSpooking() {
         return isSpooking;
+    }
+
+    public boolean getIsAlive(){
+        return isAlive;
     }
 
 }

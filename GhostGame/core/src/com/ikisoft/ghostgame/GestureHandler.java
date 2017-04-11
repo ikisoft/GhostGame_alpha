@@ -12,10 +12,12 @@ import com.ikisoft.ghostgame.GameObjects.Ghost;
 public class GestureHandler implements GestureDetector.GestureListener {
 
     private Ghost ghost;
+    private GameWorld gameWorld;
 
+    public GestureHandler(Ghost ghost, GameWorld gameWorld){
 
-    public GestureHandler(Ghost ghost){
         this.ghost = ghost;
+        this.gameWorld = gameWorld;
     }
 
 
@@ -34,7 +36,10 @@ public class GestureHandler implements GestureDetector.GestureListener {
 
     @Override
     public boolean longPress(float x, float y) {
-        return false;
+
+        gameWorld.reset();
+
+        return true;
     }
 
     @Override

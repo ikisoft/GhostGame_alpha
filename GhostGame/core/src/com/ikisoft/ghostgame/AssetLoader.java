@@ -1,11 +1,13 @@
 package com.ikisoft.ghostgame;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -20,10 +22,13 @@ public class AssetLoader {
 
 
     public static Animation<TextureRegion> ghostAnimation;
-    public static TextureRegion background, backMountain, frontMountain, ghost1, ghost2, ghost3,
-            shadow, mob1, spike;
+    public static TextureRegion background, ground, backMountain, frontMountain, ghost1, ghost2,
+            ghost3, ghostDead, ghostSpooking,
+            shadow, mob1, spike, longSpike;
     public static Texture texture;
-    public static Sound dead, spook, jump;
+    public static Sound dead, spook, jump, score;
+    public static Music hum;
+    public static BitmapFont font;
 
     public static void load(){
 
@@ -31,20 +36,32 @@ public class AssetLoader {
         texture = new Texture(Gdx.files.internal("textures.png"));
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         background = new TextureRegion(texture, 0, 0, 1080, 1920);
+        ground = new TextureRegion(texture, 0, 1368, 1080, 552);
         backMountain = new TextureRegion(texture, 1422, 0, 1080, 393);
         frontMountain = new TextureRegion(texture, 2503, 0, 1080, 393);
         ghost1 = new TextureRegion(texture, 1080, 0, 85, 119);
         ghost2 = new TextureRegion(texture, 1166, 0, 85, 119);
         ghost3 = new TextureRegion(texture, 1252, 0, 85, 119);
+        ghostDead = new TextureRegion(texture, 1080, 128, 85, 110);
+        ghostSpooking = new TextureRegion(texture, 1166, 128, 85, 110);
         shadow = new TextureRegion(texture, 1338, 0, 83, 25);
         mob1 = new TextureRegion(texture, 1080, 239, 85, 85);
         spike = new TextureRegion(texture, 1422, 394, 85, 390);
+        longSpike = new TextureRegion(texture, 1508, 394, 85, 770);
         TextureRegion[] ghosts = {ghost1, ghost2, ghost3};
         ghostAnimation = new Animation(0.3f, ghosts);
         ghostAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         dead = Gdx.audio.newSound(Gdx.files.internal("sounds/dead.wav"));
         jump = Gdx.audio.newSound(Gdx.files.internal("sounds/jump.wav"));
         spook = Gdx.audio.newSound(Gdx.files.internal("sounds/spook.wav"));
+        score = Gdx.audio.newSound(Gdx.files.internal("sounds/score.wav"));
+        /*hum = Gdx.audio.newMusic(Gdx.files.internal("sounds/hum.wav"));
+        hum.setVolume(0.5f);
+        hum.setLooping(true);
+        hum.play();*/
+        font = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
+        font.getData().setScale(2, 2);
+        //font.setColor(1, 1, 1, 1);
 
 
     }
@@ -54,6 +71,8 @@ public class AssetLoader {
         dead.dispose();
         jump.dispose();
         spook.dispose();
+        score.dispose();
+        font.dispose();
     }
 
 }

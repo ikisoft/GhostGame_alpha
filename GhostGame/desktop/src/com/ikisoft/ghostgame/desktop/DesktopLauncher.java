@@ -9,7 +9,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 270 * 2;
 		config.height = 480 * 2;
-		config.foregroundFPS = 60;
+		//config.foregroundFPS = 30;
 
 		new LwjglApplication(new GhostGame(), config);
 	}

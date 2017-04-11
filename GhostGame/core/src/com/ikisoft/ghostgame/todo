@@ -1,5 +1,10 @@
 add ghost.spook x + incremental movement/done
 fix front mountain twitching/done
-Spike could be one texture and it could cover behind ground texture
-Fix spike hitbox and render issues
+Spike could be one texture and it could cover behind ground texture/done
+Fix spike hitbox and render issues/done
+Random height spikes, make an algorithm to calculate some kind of pattern
+Skill based
+how to fit mob with this?
+dynamic object spawning, rendering and updating???
+fuq!!!!!
 

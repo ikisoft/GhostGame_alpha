@@ -3,6 +3,7 @@ package com.ikisoft.ghostgame;
 import com.badlogic.gdx.math.Intersector;
 import com.ikisoft.ghostgame.GameObjects.Ghost;
 import com.ikisoft.ghostgame.GameObjects.Mob;
+import com.ikisoft.ghostgame.GameObjects.ScrollingBg;
 import com.ikisoft.ghostgame.GameObjects.Spike;
 
 /**
@@ -14,11 +15,13 @@ public class GameWorld {
 
     private Ghost ghost;
     private Mob mob;
-    private Spike spike;
+    private Spike spike, spike2;
+    private ScrollingBg mountain, mountain2;
     private int score;
-    private boolean soundPlayed;
+    private boolean soundPlayed, mobSpawned, scored, gameover;
 
     private GameState state;
+
 
     public enum GameState {
         RUNNING, GAMEOVER;
@@ -29,23 +32,31 @@ public class GameWorld {
 
         state = GameState.RUNNING;
         ghost = new Ghost(85, 560);
-        mob = new Mob(1080, 552);
-        spike = new Spike(1200);
+        spike = new Spike(1080 + 85, 500);
+        mountain = new ScrollingBg(5);
+        mountain2 = new ScrollingBg(8);
+        //mob = new Mob(0, 522);
+        //spike2 = new Spike(2160+85, 0);
         score = 0;
         soundPlayed = false;
-
+        scored = false;
+        gameover = false;
     }
 
     public void update(float delta) {
-
 
         switch (state) {
             case RUNNING:
                 updateRunning(delta);
                 break;
             case GAMEOVER:
-                restart();
-                //updateGameOver(delta);
+
+                if (!gameover) {
+                    ghost.die();
+                    gameover = true;
+                }
+
+                updateGameOver(delta);
                 break;
             default:
                 break;
@@ -55,66 +66,74 @@ public class GameWorld {
 
     private void updateRunning(float delta) {
 
+        mountain.update(delta);
+        mountain2.update(delta);
+        collision();
         ghost.update(delta);
-        mob.update(delta);
         spike.update(delta);
 
-        if (Intersector.overlaps(ghost.getHitbox(), mob.getHitbox())
-                && ghost.getIsSpooking() == true) {
-            mob.die();
-            score++;
-            //mob.restart(1080, 552);
-        } else if (Intersector.overlaps(ghost.getHitbox(), mob.getHitbox())
-                || Intersector.overlaps(ghost.getHitbox(), spike.getHitbox())
-                && mob.getIsAlive() == true) {
-
-            if(!soundPlayed){
-                playDeadSound();
-                soundPlayed = true;
-            }
-
-            score = 0;
+        if (spike.getPositionX() < 0) {
+            soundPlayed = false;
+            scored = false;
         }
-        if (Intersector.overlaps(ghost.getHitbox(), spike.getHitbox())) {
-
-            //just for testing
-            if(!soundPlayed){
-                playDeadSound();
-                soundPlayed = true;
-            }
-            score = 0;
-        }
-
-        //just for testing
-        if(spike.getPositionX() < 0) soundPlayed = false;
 
     }
 
     private void updateGameOver(float delta) {
 
-        ghost.die();
+        ghost.updateDead(delta);
+
+
     }
 
     public void playDeadSound() {
-
         AssetLoader.dead.play();
 
     }
 
-    public void restart() {
-        ghost.restart(85, 560);
-        mob.restart(1080, 552);
+    public void reset() {
+        score = 0;
+        scored = false;
+        soundPlayed = false;
+        gameover = false;
+        ghost.reset(85, 560);
+        spike.reset(1080 + 85, 500);
+
         state = GameState.RUNNING;
 
     }
 
-    public Ghost getGhost() {
+    public void spawnMob() {
+        mobSpawned = true;
+        ghost = new Ghost(85, 560);
+    }
 
+    public void collision() {
+
+        if (Intersector.overlaps(ghost.getHitbox(), spike.getHitbox())) {
+            //just for testing
+            if (!soundPlayed) {
+                playDeadSound();
+                soundPlayed = true;
+            }
+            state = GameState.GAMEOVER;
+            score = 0;
+
+        } else if (Intersector.overlaps(ghost.getHitbox(), spike.getScoreHitbox())) {
+            if (!scored) {
+                score++;
+                scored = true;
+                AssetLoader.score.play();
+
+            }
+        }
+    }
+
+    public Ghost getGhost() {
         return ghost;
     }
 
     public Mob getMob() {
-
         return mob;
     }
 
@@ -122,9 +141,20 @@ public class GameWorld {
         return spike;
     }
 
-    public int getScore() {
+    public ScrollingBg getMountain() {
+        return mountain;
+    }
 
+    public ScrollingBg getMountain2() {
+        return mountain2;
+    }
+
+    public int getScore() {
         return score;
+    }
+
+    public boolean getMobSpawned() {
+        return mobSpawned;
     }
 
 

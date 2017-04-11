@@ -2,7 +2,10 @@ package com.ikisoft.ghostgame;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.input.GestureDetector;
+
 
 public class GhostGame extends Game {
 
@@ -18,8 +21,7 @@ public class GhostGame extends Game {
 		world = new GameWorld();
 		renderer = new GameRenderer(world);
 
-		//Gdx.input.setInputProcessor(new InputHandler(world.ghost));
-		Gdx.input.setInputProcessor(new GestureDetector(new GestureHandler(world.getGhost())));
+		Gdx.input.setInputProcessor(new GestureDetector(new GestureHandler(world.getGhost(), world)));
 
 
 
