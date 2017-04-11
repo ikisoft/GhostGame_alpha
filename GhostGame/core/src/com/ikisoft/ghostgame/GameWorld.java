@@ -18,7 +18,7 @@ public class GameWorld {
     private Spike spike, spike2;
     private ScrollingBg mountain, mountain2;
     private int score;
-    private boolean soundPlayed, mobSpawned, scored, gameover;
+    private boolean deathsoundPlayed, mobSpawned, scored, gameover;
 
     private GameState state;
 
@@ -32,13 +32,13 @@ public class GameWorld {
 
         state = GameState.RUNNING;
         ghost = new Ghost(85, 560);
-        spike = new Spike(1080 + 85, 500);
+        spike = new Spike(1080 + 85, 100);
         mountain = new ScrollingBg(5);
         mountain2 = new ScrollingBg(8);
-        //mob = new Mob(0, 522);
+        mob = new Mob(-100, 552, this);
         //spike2 = new Spike(2160+85, 0);
         score = 0;
-        soundPlayed = false;
+        deathsoundPlayed = false;
         scored = false;
         gameover = false;
     }
@@ -71,9 +71,10 @@ public class GameWorld {
         collision();
         ghost.update(delta);
         spike.update(delta);
+        mob.update(delta);
 
         if (spike.getPositionX() < 0) {
-            soundPlayed = false;
+            deathsoundPlayed = false;
             scored = false;
         }
 
@@ -94,10 +95,11 @@ public class GameWorld {
     public void reset() {
         score = 0;
         scored = false;
-        soundPlayed = false;
+        deathsoundPlayed = false;
         gameover = false;
         ghost.reset(85, 560);
-        spike.reset(1080 + 85, 500);
+        spike.reset(1080 + 85, 100);
+        mob.reset(-100, 552);
 
         state = GameState.RUNNING;
 
@@ -105,16 +107,16 @@ public class GameWorld {
 
     public void spawnMob() {
         mobSpawned = true;
-        ghost = new Ghost(85, 560);
+
     }
 
     public void collision() {
 
         if (Intersector.overlaps(ghost.getHitbox(), spike.getHitbox())) {
             //just for testing
-            if (!soundPlayed) {
+            if (!deathsoundPlayed) {
                 playDeadSound();
-                soundPlayed = true;
+                deathsoundPlayed = true;
             }
             state = GameState.GAMEOVER;
             score = 0;
@@ -126,6 +128,22 @@ public class GameWorld {
                 AssetLoader.score.play();
 
             }
+        }
+
+        if (Intersector.overlaps(ghost.getHitbox(), mob.getHitbox())) {
+
+            if (ghost.getIsSpooking()) {
+                mob.die();
+
+            }else if(mob.getIsAlive()){
+                state = GameState.GAMEOVER;
+                if (!deathsoundPlayed) {
+                    playDeadSound();
+                    deathsoundPlayed = true;
+                }
+
+            }
+
         }
     }
 

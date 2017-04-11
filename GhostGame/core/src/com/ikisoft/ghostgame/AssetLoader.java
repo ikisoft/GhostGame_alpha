@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -24,11 +25,12 @@ public class AssetLoader {
     public static Animation<TextureRegion> ghostAnimation;
     public static TextureRegion background, ground, backMountain, frontMountain, ghost1, ghost2,
             ghost3, ghostDead, ghostSpooking,
-            shadow, mob1, spike, longSpike;
+            shadow, mob1, mobDead, spike, longSpike;
     public static Texture texture;
-    public static Sound dead, spook, jump, score;
+    public static Sound dead, spook, jump, score, mobhit;
     public static Music hum;
     public static BitmapFont font;
+    public static BitmapFont font2;
 
     public static void load(){
 
@@ -46,6 +48,7 @@ public class AssetLoader {
         ghostSpooking = new TextureRegion(texture, 1166, 128, 85, 110);
         shadow = new TextureRegion(texture, 1338, 0, 83, 25);
         mob1 = new TextureRegion(texture, 1080, 239, 85, 85);
+        mobDead = new TextureRegion(texture, 1080, 325, 85, 85);
         spike = new TextureRegion(texture, 1422, 394, 85, 390);
         longSpike = new TextureRegion(texture, 1508, 394, 85, 770);
         TextureRegion[] ghosts = {ghost1, ghost2, ghost3};
@@ -55,13 +58,23 @@ public class AssetLoader {
         jump = Gdx.audio.newSound(Gdx.files.internal("sounds/jump.wav"));
         spook = Gdx.audio.newSound(Gdx.files.internal("sounds/spook.wav"));
         score = Gdx.audio.newSound(Gdx.files.internal("sounds/score.wav"));
+        mobhit = Gdx.audio.newSound(Gdx.files.internal("sounds/mobhit.wav"));
         /*hum = Gdx.audio.newMusic(Gdx.files.internal("sounds/hum.wav"));
         hum.setVolume(0.5f);
         hum.setLooping(true);
         hum.play();*/
         font = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font.getData().setScale(2, 2);
-        //font.setColor(1, 1, 1, 1);
+        font2 = new BitmapFont(Gdx.files.internal("data/pixel.fnt"));
+        font2.getData().setScale(1f, 1f);
+        /*FreeTypeFontGenerator generator =
+                new FreeTypeFontGenerator(Gdx.files.internal("data/5squared-pixel.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 12;
+        generator.dispose();
+
+        font2 = generator.generateFont(parameter);
+        //font.setColor(1, 1, 1, 1);*/
 
 
     }
@@ -72,7 +85,10 @@ public class AssetLoader {
         jump.dispose();
         spook.dispose();
         score.dispose();
+        mobhit.dispose();
         font.dispose();
+        font2.dispose();
+
     }
 
 }

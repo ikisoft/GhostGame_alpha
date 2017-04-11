@@ -29,7 +29,8 @@ public class GameRenderer {
     private Mob mob;
     private boolean dev = false;
     private String score;
-
+    private float colorvar = 0;
+    private float expHeight = 552;
 
 
     public GameRenderer(GameWorld world) {
@@ -65,15 +66,12 @@ public class GameRenderer {
         drawSpike(delta);
         drawGround();
         drawGhost(runTime);
-
         //Mob
-        /*if (gameWorld.getMobSpawned() == true) {
-            drawMobShadow(delta);
-            batch.disableBlending();
-            drawMob();
-        }*/
-
+        batch.disableBlending();
+        drawMob();
+        //score and exp
         drawScore();
+        if(gameWorld.getGhost().getIsAlive())drawExp();
 
         batch.end();
 
@@ -86,13 +84,30 @@ public class GameRenderer {
 
     }
 
+    private void drawExp() {
+
+
+        colorvar += 0.1;
+
+        if (colorvar > 1) colorvar = 0;
+        if (gameWorld.getMob().getIsAlive()) expHeight = 552;
+        AssetLoader.font2.setColor(1 * colorvar * 0.6f, 1 * colorvar * 1f, 1 * colorvar * 0.3f,
+                0.7f * (552 / expHeight));
+        if (!gameWorld.getMob().getIsAlive()) {
+            AssetLoader.font2.draw(batch, "EXP", 500, expHeight);
+            expHeight += 5;
+
+        }
+
+    }
+
     private void drawScore() {
 
         //score = gameWorld.getScore() + "";
         batch.enableBlending();
         //AssetLoader.font.draw(batch, "" + gameWorld.getScore(), 540, 1720);
-        //String score = gameWorld.getScore() + "";
-        AssetLoader.font.draw(batch, "" + gameWorld.getScore(), 495, 1620);
+        int length = ("" + gameWorld.getScore()).length();
+        AssetLoader.font.draw(batch, "" + gameWorld.getScore(), 495 - (30 * length), 1620);
 
 
     }
@@ -143,8 +158,20 @@ public class GameRenderer {
     }
 
     private void drawMob() {
-        //draw mob
-        batch.draw(AssetLoader.mob1, mob.getX(), mob.getY());
+        //draw mob shadow
+        if (gameWorld.getMob().getY() >= 552) {
+            batch.enableBlending();
+            batch.setColor(1.0f, 1.0f, 1.0f, 0.5f * (560 / gameWorld.getMob().getY()));
+            batch.draw(AssetLoader.shadow, gameWorld.getMob().getX(), 527);
+        }
+        batch.disableBlending();
+        //draw mob and dead mob
+        if(gameWorld.getMob().getIsAlive()){
+            batch.draw(AssetLoader.mob1, mob.getX(), mob.getY());
+        }else{
+            batch.draw(AssetLoader.mobDead, mob.getX(), mob.getY());
+        }
+        batch.setColor(1f, 1f, 1f, 1f);
     }
 
     private void drawGhost(float runTime) {
@@ -152,17 +179,17 @@ public class GameRenderer {
         //Draw shadow
         batch.enableBlending();
 
-        if (gameWorld.getGhost().getY() > 500){
+        if (gameWorld.getGhost().getY() > 500) {
             batch.setColor(1f, 1f, 1f, 0.5f * (560 / gameWorld.getGhost().getY()));
             batch.draw(AssetLoader.shadow, gameWorld.getGhost().getX(), 527);
         }
 
         //Ghost death effect, if dead paint red else white
-        if(!gameWorld.getGhost().getIsAlive()){
+        if (!gameWorld.getGhost().getIsAlive()) {
             batch.setColor(1f, 0.5f, 0.5f, 0.5f);
             batch.draw(AssetLoader.ghostDead, gameWorld.getGhost().getX(), gameWorld.getGhost().getY());
-        }else{
-            if(!gameWorld.getGhost().getIsSpooking()){
+        } else {
+            if (!gameWorld.getGhost().getIsSpooking()) {
                 batch.setColor(1.0f, 1.0f, 1.0f, 0.8f);
                 batch.draw(AssetLoader.ghostAnimation.getKeyFrame(runTime),
                         gameWorld.getGhost().getX(), gameWorld.getGhost().getY());
@@ -176,9 +203,8 @@ public class GameRenderer {
         }
 
 
-
         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
-        batch.disableBlending();
+
     }
 
     private void drawGhostShadow() {
