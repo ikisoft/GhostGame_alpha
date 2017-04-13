@@ -1,4 +1,4 @@
-package com.ikisoft.ghostgame;
+package com.ikisoft.ghostgame.Render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.ikisoft.ghostgame.GameObjects.Mob;
+import com.ikisoft.ghostgame.Helpers.AssetLoader;
 
 /**
  * Created by Max on 2.4.2017.
@@ -31,6 +33,8 @@ public class GameRenderer {
     private String score;
     private float colorvar = 0;
     private float expHeight = 552;
+    private int length;
+    private Vector2 logoPos, logoTarget, scorePos, scoreTarget;
 
 
     public GameRenderer(GameWorld world) {
@@ -46,12 +50,15 @@ public class GameRenderer {
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(cam.combined);
         font.getData().setScale(2, 2);
+        logoPos = new Vector2(130, 2500);
+        logoTarget = new Vector2(130, 1820);
+        scorePos = new Vector2(495 - (30 * length), 1620);
+        scoreTarget = new Vector2(510 - (30 * length), 1150);
 
 
     }
 
     public void render(float delta) {
-
 
         cam.update();
         runTime += Gdx.graphics.getDeltaTime();
@@ -60,7 +67,7 @@ public class GameRenderer {
         batch.begin();
         batch.disableBlending();
         drawBg();
-        batch.enableBlending();
+        drawSun();
         drawBackMountain(delta);
         drawFrontMountain(delta);
         drawSpike(delta);
@@ -70,8 +77,19 @@ public class GameRenderer {
         batch.disableBlending();
         drawMob();
         //score and exp
-        drawScore();
-        if(gameWorld.getGhost().getIsAlive())drawExp();
+
+        if (gameWorld.getState() != GameWorld.GameState.GAMEOVER){
+            scorePos.x =  495 - (30 * length);
+            scorePos.y = 1620;
+        }
+        if (gameWorld.getState() == GameWorld.GameState.MAINMENU) drawMainMenu();
+        if (gameWorld.getState() == GameWorld.GameState.OPTIONS) drawOptions();
+        if (gameWorld.getState() == GameWorld.GameState.RUNNING) drawScore();
+        if (gameWorld.getState() == GameWorld.GameState.MENU) drawMenu();
+        if (gameWorld.getState() == GameWorld.GameState.TUTORIAL) drawTutorial();
+
+        if (gameWorld.getGhost().getIsAlive()) drawExp();
+        if (gameWorld.getState() == GameWorld.GameState.GAMEOVER) drawGravestone(delta);
 
         batch.end();
 
@@ -82,6 +100,55 @@ public class GameRenderer {
         //draw font
         //for testing and shit lol
 
+    }
+
+    private void drawTutorial() {
+        batch.enableBlending();
+        batch.draw(AssetLoader.tutorial, gameWorld.getTutorialScreen().getPosition().x,
+                gameWorld.getTutorialScreen().getPosition().y);
+
+    }
+
+    private void drawOptions() {
+        batch.enableBlending();
+        batch.draw(AssetLoader.options, gameWorld.getOptions().getPosition().x,
+                gameWorld.getOptions().getPosition().y);
+
+    }
+
+    private void drawMenu() {
+
+        batch.enableBlending();
+        batch.draw(AssetLoader.menu, gameWorld.getMenu().getPosition().x,
+                gameWorld.getMenu().getPosition().y);
+
+
+    }
+
+    private void drawMainMenu() {
+        batch.enableBlending();
+        logoPos.lerp(logoTarget, 0.1f);
+        AssetLoader.font.draw(batch, "Spooky\n Ghost", logoPos.x, logoPos.y);
+        batch.draw(AssetLoader.mainmenu, gameWorld.getMainMenu().getPosition().x,
+                gameWorld.getMainMenu().getPosition().y);
+    }
+
+    private void drawGravestone(float delta) {
+        batch.enableBlending();
+        batch.draw(AssetLoader.gravestone, gameWorld.getDeathScreen().getPosition().x,
+                gameWorld.getDeathScreen().getPosition().y);
+        scorePos.lerp(scoreTarget, 0.1f * delta);
+        AssetLoader.font.draw(batch, "" + gameWorld.getScore(), scorePos.x, scorePos.y);
+        AssetLoader.font.draw(batch, "" + AssetLoader.prefs.getInteger("highscore"), scorePos.x, scorePos.y -250);
+
+    }
+
+    private void drawSun() {
+        batch.enableBlending();
+        batch.setColor(1, 1, 1, 1);
+        batch.draw(AssetLoader.sun, gameWorld.getSun().getPosition().x,
+                gameWorld.getSun().getPosition().y);
+        batch.setColor(1, 1, 1, 1);
     }
 
     private void drawExp() {
@@ -106,7 +173,8 @@ public class GameRenderer {
         //score = gameWorld.getScore() + "";
         batch.enableBlending();
         //AssetLoader.font.draw(batch, "" + gameWorld.getScore(), 540, 1720);
-        int length = ("" + gameWorld.getScore()).length();
+
+        length = ("" + gameWorld.getScore()).length();
         AssetLoader.font.draw(batch, "" + gameWorld.getScore(), 495 - (30 * length), 1620);
 
 
@@ -117,44 +185,10 @@ public class GameRenderer {
         batch.draw(AssetLoader.ground, 0, 0);
     }
 
-    private void drawDev() {
-        //spike hitbox
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(1, 0, 0, 1);
-        shapeRenderer.rect(gameWorld.getSpike().getHitbox().x,
-                gameWorld.getSpike().getHitbox().y,
-                gameWorld.getSpike().getHitbox().getWidth(),
-                gameWorld.getSpike().getHitbox().getHeight());
-        //score hitbox
-        shapeRenderer.setColor(0, 1, 0, 1);
-        shapeRenderer.rect(gameWorld.getSpike().getScoreHitbox().x,
-                gameWorld.getSpike().getScoreHitbox().y,
-                gameWorld.getSpike().getScoreHitbox().getWidth(),
-                gameWorld.getSpike().getScoreHitbox().getHeight()
-        );
-        shapeRenderer.end();
-
-        batch.enableBlending();
-        batch.begin();
-        font.draw(batch, "Score: " + String.valueOf(gameWorld.getScore()), 0, 1910);
-        font.draw(batch, "X: " + String.valueOf(gameWorld.getGhost().getX()), 0, 1870);
-        font.draw(batch, "Y: " + String.valueOf(gameWorld.getGhost().getY()), 0, 1830);
-        font.draw(batch, "Spooking: " + String.valueOf(gameWorld.getGhost().getIsSpooking()), 0, 1790);
-        batch.end();
-    }
-
     private void drawSpike(float delta) {
         //spike1
         batch.draw(AssetLoader.longSpike, gameWorld.getSpike().getPositionX(),
                 gameWorld.getSpike().getPositionY());
-        //spike2
-        // batch.draw(AssetLoader.longSpike, gameWorld.getSpike2().getPositionX(),
-        // gameWorld.getSpike2().getPositionY());
-    }
-
-    private void drawMobShadow(float delta) {
-        batch.setColor(1.0f, 1.0f, 1.0f, 0.5f * (560 / gameWorld.getMob().getY()));
-        batch.draw(AssetLoader.shadow, gameWorld.getMob().getX(), 527);
     }
 
     private void drawMob() {
@@ -166,9 +200,9 @@ public class GameRenderer {
         }
         batch.disableBlending();
         //draw mob and dead mob
-        if(gameWorld.getMob().getIsAlive()){
+        if (gameWorld.getMob().getIsAlive()) {
             batch.draw(AssetLoader.mob1, mob.getX(), mob.getY());
-        }else{
+        } else {
             batch.draw(AssetLoader.mobDead, mob.getX(), mob.getY());
         }
         batch.setColor(1f, 1f, 1f, 1f);
@@ -201,19 +235,11 @@ public class GameRenderer {
             }
 
         }
-
-
         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
-
-    }
-
-    private void drawGhostShadow() {
-        batch.enableBlending();
-        batch.setColor(1.0f, 1.0f, 1.0f, 0.5f * (560 / gameWorld.getGhost().getY()));
-        batch.draw(AssetLoader.shadow, gameWorld.getGhost().getX(), 527);
     }
 
     public void drawBg() {
+
 
         batch.draw(AssetLoader.background, 0, 0);
     }
@@ -231,6 +257,7 @@ public class GameRenderer {
 
     public void drawFrontMountain(float delta) {
 
+        batch.setColor(1, 1, 1, 1);
         batch.draw(AssetLoader.frontMountain, gameWorld.getMountain2().getPositionX(), 552);
         batch.draw(AssetLoader.frontMountain,
                 gameWorld.getMountain2().getPositionX() + AssetLoader.frontMountain.getRegionWidth() - 1, 552);
@@ -239,6 +266,34 @@ public class GameRenderer {
             fmPos = -1;
         }*/
     }
+
+    private void drawDev() {
+        //spike hitbox
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(1, 0, 0, 1);
+        shapeRenderer.rect(gameWorld.getSpike().getHitbox().x,
+                gameWorld.getSpike().getHitbox().y,
+                gameWorld.getSpike().getHitbox().getWidth(),
+                gameWorld.getSpike().getHitbox().getHeight());
+        //score hitbox
+        shapeRenderer.setColor(0, 1, 0, 1);
+        shapeRenderer.rect(gameWorld.getScoreHitbox().getHitbox().x,
+                gameWorld.getScoreHitbox().getHitbox().y,
+                gameWorld.getScoreHitbox().getHitbox().getWidth(),
+                gameWorld.getScoreHitbox().getHitbox().getHeight()
+        );
+        shapeRenderer.end();
+
+        batch.enableBlending();
+        batch.begin();
+        font.draw(batch, "Score: " + String.valueOf(gameWorld.getScore()), 0, 1910);
+        font.draw(batch, "X: " + String.valueOf(gameWorld.getGhost().getX()), 0, 1870);
+        font.draw(batch, "Y: " + String.valueOf(gameWorld.getGhost().getY()), 0, 1830);
+        font.draw(batch, "Spooking: " + String.valueOf(gameWorld.getGhost().getIsSpooking()), 0, 1790);
+        font.draw(batch, "Distance: " + String.valueOf(gameWorld.getDistance()), 0, 1750);
+        batch.end();
+    }
+
 
     public void resize(int width, int height) {
 
@@ -249,7 +304,6 @@ public class GameRenderer {
 
     public void dispose() {
         batch.dispose();
-
 
     }
 

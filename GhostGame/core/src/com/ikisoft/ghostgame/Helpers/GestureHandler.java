@@ -1,9 +1,10 @@
-package com.ikisoft.ghostgame;
+package com.ikisoft.ghostgame.Helpers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.ikisoft.ghostgame.GameObjects.Ghost;
+import com.ikisoft.ghostgame.Render.GameWorld;
 
 /**
  * Created by Max on 2.4.2017.
@@ -13,41 +14,68 @@ public class GestureHandler implements GestureDetector.GestureListener {
 
     private Ghost ghost;
     private GameWorld gameWorld;
+    private float scaleX;
+    private float scaleY;
 
-    public GestureHandler(Ghost ghost, GameWorld gameWorld){
+    public GestureHandler(Ghost ghost, GameWorld gameWorld, float scaleX, float scaleY) {
 
         this.ghost = ghost;
         this.gameWorld = gameWorld;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+
     }
 
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
+
+/*        x = scaleX(x);
+        y = scaleY(y);
+
+        if (gameWorld.getState() == GameWorld.GameState.MAINMENU) {
+            if(x >= 220 && x <= 864 && y >= 750 && y <= 880){
+                gameWorld.reset();
+
+            }
+            System.out.println("x: " + x);
+            System.out.println("y: " + y);
+
+
+            return true;
+        }*/
         return false;
     }
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        Gdx.app.log("TouchDown: ", "Touched");
 
-        ghost.onClick();
-        return true;
+        if (gameWorld.getState() == GameWorld.GameState.RUNNING) {
+            ghost.onClick();
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean longPress(float x, float y) {
 
-        gameWorld.reset();
 
-        return true;
+
+        return false;
     }
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
 
-        ghost.onFling();
+        if (Math.abs(velocityX) > Math.abs(velocityY)) {
+            if (velocityX > 0) {
+                ghost.onFling();
 
-        return true;
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -73,5 +101,13 @@ public class GestureHandler implements GestureDetector.GestureListener {
     @Override
     public void pinchStop() {
 
+    }
+
+    private float scaleX(float screenX) {
+        return (screenX / scaleX) * 1080;
+    }
+
+    private float scaleY(float screenY) {
+        return (screenY / scaleY) * 1920;
     }
 }

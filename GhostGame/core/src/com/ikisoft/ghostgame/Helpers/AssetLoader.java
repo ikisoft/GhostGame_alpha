@@ -1,6 +1,7 @@
-package com.ikisoft.ghostgame;
+package com.ikisoft.ghostgame.Helpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.FPSLogger;
@@ -24,13 +25,14 @@ public class AssetLoader {
 
     public static Animation<TextureRegion> ghostAnimation;
     public static TextureRegion background, ground, backMountain, frontMountain, ghost1, ghost2,
-            ghost3, ghostDead, ghostSpooking,
+            ghost3, ghostDead, ghostSpooking, sun, gravestone, mainmenu, menu, options, tutorial,
             shadow, mob1, mobDead, spike, longSpike;
     public static Texture texture;
-    public static Sound dead, spook, jump, score, mobhit;
+    public static Sound dead, spook, jump, score, mobhit, menuclick1, menuclick2;
     public static Music hum;
     public static BitmapFont font;
     public static BitmapFont font2;
+    public static Preferences prefs = Gdx.app.getPreferences("SG_prefs");
 
     public static void load(){
 
@@ -51,6 +53,12 @@ public class AssetLoader {
         mobDead = new TextureRegion(texture, 1080, 325, 85, 85);
         spike = new TextureRegion(texture, 1422, 394, 85, 390);
         longSpike = new TextureRegion(texture, 1508, 394, 85, 770);
+        sun = new TextureRegion(texture, 1080, 411, 220, 220);
+        gravestone = new TextureRegion(texture, 1631, 394, 857, 932);
+        mainmenu = new TextureRegion(texture, 2489, 790, 792, 536);
+        menu = new TextureRegion(texture, 3282, 790, 792, 1236);
+        options = new TextureRegion(texture, 2489, 1327, 792, 536);
+        tutorial = new TextureRegion(texture, 4075, 790, 792, 1236);
         TextureRegion[] ghosts = {ghost1, ghost2, ghost3};
         ghostAnimation = new Animation(0.3f, ghosts);
         ghostAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
@@ -59,22 +67,18 @@ public class AssetLoader {
         spook = Gdx.audio.newSound(Gdx.files.internal("sounds/spook.wav"));
         score = Gdx.audio.newSound(Gdx.files.internal("sounds/score.wav"));
         mobhit = Gdx.audio.newSound(Gdx.files.internal("sounds/mobhit.wav"));
+        menuclick1 = Gdx.audio.newSound(Gdx.files.internal("sounds/menuclick1.wav"));
+        menuclick2 = Gdx.audio.newSound(Gdx.files.internal("sounds/menuclick2.wav"));
         /*hum = Gdx.audio.newMusic(Gdx.files.internal("sounds/hum.wav"));
         hum.setVolume(0.5f);
         hum.setLooping(true);
         hum.play();*/
         font = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font.getData().setScale(2, 2);
+        //font.setColor(0.93f, 0.701f, 0.682f, 1);
         font2 = new BitmapFont(Gdx.files.internal("data/pixel.fnt"));
         font2.getData().setScale(1f, 1f);
-        /*FreeTypeFontGenerator generator =
-                new FreeTypeFontGenerator(Gdx.files.internal("data/5squared-pixel.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 12;
-        generator.dispose();
 
-        font2 = generator.generateFont(parameter);
-        //font.setColor(1, 1, 1, 1);*/
 
 
     }

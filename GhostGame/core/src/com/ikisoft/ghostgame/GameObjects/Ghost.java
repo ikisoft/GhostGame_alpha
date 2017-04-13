@@ -2,7 +2,7 @@ package com.ikisoft.ghostgame.GameObjects;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.ikisoft.ghostgame.AssetLoader;
+import com.ikisoft.ghostgame.Helpers.AssetLoader;
 
 /**
  * Created by Max on 2.4.2017.

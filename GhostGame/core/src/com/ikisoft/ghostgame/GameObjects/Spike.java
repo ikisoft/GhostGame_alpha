@@ -2,7 +2,8 @@ package com.ikisoft.ghostgame.GameObjects;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.ikisoft.ghostgame.AssetLoader;
+import com.ikisoft.ghostgame.Helpers.AssetLoader;
+import com.ikisoft.ghostgame.Render.GameWorld;
 
 import java.util.Random;
 
@@ -12,39 +13,53 @@ import java.util.Random;
 
 public class Spike {
 
-    private Rectangle hitbox, scoreHitbox;
+    private Rectangle hitbox;
     private Vector2 position;
     private Random rand;
+    private GameWorld gameWorld;
+    private float difficultyScale, speed;
+    private boolean scored;
 
 
-    public Spike(float x, float y) {
 
+    public Spike(float x, float y, GameWorld gameWorld) {
+
+        this.gameWorld = gameWorld;
         rand = new Random();
         position = new Vector2();
         position.x = x;
         position.y = y;
         hitbox = new Rectangle(position.x, position.y, 15, AssetLoader.longSpike.getRegionHeight() - 5);
-        scoreHitbox = new Rectangle(position.x, position.y + AssetLoader.longSpike.getRegionHeight(),
-                15, 1200);
+        speed = 12;
+        scored = false;
     }
 
 
     public void update(float delta) {
 
-        position.x -= 10 * delta;
+        //increases difficulty over time, cap at 1000 (unit unknown)
+        difficultyScale = gameWorld.getDistance();
+        if(difficultyScale > 2000)difficultyScale = 2000;
+        //
+        position.x -= speed * delta;
         hitbox.x = position.x + 35;
-        hitbox.y = position.y -5;
-        scoreHitbox.x = position.x + 35;
-        scoreHitbox.y = position.y + AssetLoader.longSpike.getRegionHeight();
-
+        hitbox.y = position.y - 5;
         if (position.x < -100) spawn();
 
     }
 
     public void spawn() {
-        position.x = 1200;
-        position.y = rand.nextInt(500);
+        System.out.println(difficultyScale);
+        scored = false;
+        if(difficultyScale < 1500){
+            position.x = 1400 + rand.nextInt(300 + 300) - 300;
+        }else{
+            position.x = 1400 + rand.nextInt(450 + 300) - 300;
+        }
+        //lol what the fuck :D
+        position.y = rand.nextInt((int) (510 * difficultyScale / 2000));
         //position.y = 200;
+
 
     }
 
@@ -54,14 +69,10 @@ public class Spike {
         position.y = y;
         hitbox.x = position.x;
         hitbox.y = position.y;
-        scoreHitbox.x = position.x;
-        scoreHitbox.y = position.y;
+        scored = false;
 
 
-    }
 
-    public Rectangle getScoreHitbox() {
-        return scoreHitbox;
     }
 
     public Rectangle getHitbox() {
@@ -75,4 +86,13 @@ public class Spike {
     public float getPositionY() {
         return position.y;
     }
+
+    public boolean getScored(){
+        return scored;
+    }
+
+    public void setScored(boolean scored) {
+        this.scored = scored;
+    }
+
 }
