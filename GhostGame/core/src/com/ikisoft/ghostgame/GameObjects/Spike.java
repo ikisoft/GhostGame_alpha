@@ -54,10 +54,17 @@ public class Spike {
         if(difficultyScale < 1500){
             position.x = 1400 + rand.nextInt(300 + 300) - 300;
         }else{
-            position.x = 1400 + rand.nextInt(450 + 300) - 300;
+            position.x = 1500 + rand.nextInt(450 + 300) - 300;
+        }
+
+        if(position.y > 490){
+            position.y = rand.nextInt((int) (450 * difficultyScale / 2000));
+
+        }else{
+            position.y = rand.nextInt((int) (510 * difficultyScale / 2000));
+
         }
         //lol what the fuck :D
-        position.y = rand.nextInt((int) (510 * difficultyScale / 2000));
         //position.y = 200;
 
 

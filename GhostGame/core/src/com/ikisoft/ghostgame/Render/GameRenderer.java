@@ -11,6 +11,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.ikisoft.ghostgame.GameObjects.Mob;
 import com.ikisoft.ghostgame.Helpers.AssetLoader;
 
+import sun.security.provider.SHA;
+
 /**
  * Created by Max on 2.4.2017.
  */
@@ -29,7 +31,6 @@ public class GameRenderer {
     private ShapeRenderer shapeRenderer;
     private BitmapFont font = new BitmapFont();
     private Mob mob;
-    private boolean dev = false;
     private String score;
     private float colorvar = 0;
     private float expHeight = 552;
@@ -49,7 +50,6 @@ public class GameRenderer {
         batch.setProjectionMatrix(cam.combined);
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(cam.combined);
-        font.getData().setScale(2, 2);
         logoPos = new Vector2(130, 2500);
         logoTarget = new Vector2(130, 1820);
         scorePos = new Vector2(495 - (30 * length), 1620);
@@ -78,8 +78,8 @@ public class GameRenderer {
         drawMob();
         //score and exp
 
-        if (gameWorld.getState() != GameWorld.GameState.GAMEOVER){
-            scorePos.x =  495 - (30 * length);
+        if (gameWorld.getState() != GameWorld.GameState.GAMEOVER) {
+            scorePos.x = 495 - (30 * length);
             scorePos.y = 1620;
         }
         if (gameWorld.getState() == GameWorld.GameState.MAINMENU) drawMainMenu();
@@ -94,7 +94,7 @@ public class GameRenderer {
         batch.end();
 
         //TEST CODE HERE
-        if (dev == true) drawDev();
+        if (gameWorld.getDev() == true) drawDev();
 
 
         //draw font
@@ -122,6 +122,12 @@ public class GameRenderer {
         batch.draw(AssetLoader.menu, gameWorld.getMenu().getPosition().x,
                 gameWorld.getMenu().getPosition().y);
 
+        AssetLoader.font3.draw(batch, "Highscore: " + AssetLoader.prefs.getInteger("highscore"), 240, 1160);
+        AssetLoader.font3.draw(batch, "Total spooks: " + AssetLoader.prefs.getInteger("spookedmobs"), 240, 1100);
+        AssetLoader.font3.draw(batch, "LVL: " + gameWorld.getLvl(), 240, 1040);
+        AssetLoader.font3.draw(batch, "Next lvl: " + gameWorld.getExptolvl() + "/1", 240, 980);
+        AssetLoader.font3.draw(batch, "Total EXP: " + AssetLoader.prefs.getInteger("exp"), 240, 920);
+
 
     }
 
@@ -139,7 +145,23 @@ public class GameRenderer {
                 gameWorld.getDeathScreen().getPosition().y);
         scorePos.lerp(scoreTarget, 0.1f * delta);
         AssetLoader.font.draw(batch, "" + gameWorld.getScore(), scorePos.x, scorePos.y);
-        AssetLoader.font.draw(batch, "" + AssetLoader.prefs.getInteger("highscore"), scorePos.x, scorePos.y -250);
+        AssetLoader.font.draw(batch, "" + AssetLoader.prefs.getInteger("highscore"), scorePos.x, scorePos.y - 250);
+        if(gameWorld.getScoreSaved()){
+            colorvar += 0.1;
+            if (colorvar > 1) colorvar = 0;
+            AssetLoader.font2.setColor(1 * colorvar * 0.5f, 1 * colorvar * 1f, 1 * colorvar * 0.5f, 1);
+            AssetLoader.font2.getData().setScale(2, 2);
+            AssetLoader.font2.draw(batch, "NEW HIGHSCORE!", 150, 400);
+        }
+        if(gameWorld.getLvlUp()){
+            colorvar += 0.1;
+            if (colorvar > 1) colorvar = 0;
+            AssetLoader.font2.setColor(1 * colorvar * 0.5f, 1 * colorvar * 1f, 1 * colorvar * 0.5f, 1);
+            AssetLoader.font2.getData().setScale(2, 2);
+            AssetLoader.font2.draw(batch, "LEVEL UP!", 300, 270);
+
+        }
+
 
     }
 
@@ -153,16 +175,15 @@ public class GameRenderer {
 
     private void drawExp() {
 
-
         colorvar += 0.1;
 
         if (colorvar > 1) colorvar = 0;
         if (gameWorld.getMob().getIsAlive()) expHeight = 552;
-        AssetLoader.font2.setColor(1 * colorvar * 0.6f, 1 * colorvar * 1f, 1 * colorvar * 0.3f,
-                0.7f * (552 / expHeight));
+        AssetLoader.font2.setColor(1 * colorvar * 0.5f, 1 * colorvar * 1f, 1 * colorvar * 0.5f,
+                1 * (552 / expHeight) / 2);
         if (!gameWorld.getMob().getIsAlive()) {
-            AssetLoader.font2.draw(batch, "EXP", 500, expHeight);
-            expHeight += 5;
+            AssetLoader.font2.draw(batch, "10 EXP", 500, expHeight);
+            expHeight += 2;
 
         }
 
@@ -283,17 +304,26 @@ public class GameRenderer {
                 gameWorld.getScoreHitbox().getHitbox().getHeight()
         );
         shapeRenderer.end();
-
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.rect(0, 1630, (gameWorld.getExptolvl()) * 200, 10);
+        shapeRenderer.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(1, 0, 0, 1);
+        shapeRenderer.rect(0, 1630, 200, 10);
+        shapeRenderer.end();
         batch.enableBlending();
         batch.begin();
+        font.getData().setScale(2, 2);
         font.draw(batch, "Score: " + String.valueOf(gameWorld.getScore()), 0, 1910);
         font.draw(batch, "X: " + String.valueOf(gameWorld.getGhost().getX()), 0, 1870);
         font.draw(batch, "Y: " + String.valueOf(gameWorld.getGhost().getY()), 0, 1830);
         font.draw(batch, "Spooking: " + String.valueOf(gameWorld.getGhost().getIsSpooking()), 0, 1790);
         font.draw(batch, "Distance: " + String.valueOf(gameWorld.getDistance()), 0, 1750);
+        font.draw(batch, "Version: beta1.0", 0, 1710);
+        //not valid in deathscreen, too irrelevant to be fixed, data is correct (?)
+        font.draw(batch, "EXP:" + String.valueOf(AssetLoader.prefs.getInteger("exp")), 0, 1670);
         batch.end();
     }
-
 
     public void resize(int width, int height) {
 

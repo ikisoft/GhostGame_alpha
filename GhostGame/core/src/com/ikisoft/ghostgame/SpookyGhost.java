@@ -9,7 +9,7 @@ import com.ikisoft.ghostgame.Helpers.GestureHandler;
 import com.ikisoft.ghostgame.Helpers.InputHandler;
 import com.ikisoft.ghostgame.Render.GameWorld;
 
-public class GhostGame extends Game {
+public class SpookyGhost extends Game {
 
 	private com.ikisoft.ghostgame.Helpers.AssetLoader assetLoader;
 	private com.ikisoft.ghostgame.Render.GameRenderer renderer;

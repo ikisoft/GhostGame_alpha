@@ -1,7 +1,11 @@
 package com.ikisoft.ghostgame.Helpers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.ikisoft.ghostgame.Render.GameRenderer;
 import com.ikisoft.ghostgame.Render.GameWorld;
+import com.sun.corba.se.impl.oa.poa.ActiveObjectMap;
 
 /**
  * Created by Max on 13.4.2017.
@@ -26,6 +30,23 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+
+
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE) || Gdx.input.isKeyPressed(Input.Keys.UP)){
+            gameWorld.getGhost().onClick();
+            return true;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+            gameWorld.getGhost().onFling();
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.E)
+                && Gdx.input.isKeyPressed(Input.Keys.V)){
+            gameWorld.setDev();
+
+        }
+
+
+
         return false;
     }
 
@@ -72,6 +93,7 @@ public class InputHandler implements InputProcessor {
             //PLAY
             if (x >= 200 && x <= 940 && y >= 750 && y <= 880) {
                 if(!tutorialShown){
+                    AssetLoader.menuclick2.play();
                     gameWorld.setState(GameWorld.GameState.TUTORIAL);
                     tutorialShown = true;
                 } else {

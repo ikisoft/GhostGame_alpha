@@ -70,7 +70,20 @@ public class GestureHandler implements GestureDetector.GestureListener {
 
         if (Math.abs(velocityX) > Math.abs(velocityY)) {
             if (velocityX > 0) {
-                ghost.onFling();
+                if(gameWorld.getState() == GameWorld.GameState.RUNNING){
+                    ghost.onFling();
+                } else if(gameWorld.getState() == GameWorld.GameState.MENU){
+                    AssetLoader.menuclick2.play();
+                    gameWorld.setState(GameWorld.GameState.OPTIONS);
+                    gameWorld.getMenu().reset();
+                }
+                else if(gameWorld.getState() == GameWorld.GameState.OPTIONS){
+                    AssetLoader.menuclick2.play();
+                    gameWorld.setState(GameWorld.GameState.MENU);
+                    gameWorld.getOptions().reset();
+
+                }
+
 
                 return true;
             }
