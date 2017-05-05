@@ -32,11 +32,14 @@ public class GameWorld {
     private Menu menu;
     private Options options;
     private TutorialScreen tutorialScreen;
-    private int score;
-    private boolean deathsoundPlayed, gameover, saved;
+    private int score, exp, lvl, spookedMobs;
+    private float exptolvl, thislvlexp, nextlvlexp;
+    private boolean deathsoundPlayed, gameover, scoreSaved, dataSaved, dev, lvlUp;
     private float distance;
 
     private GameState state;
+
+
 
     public enum GameState {
         MAINMENU, RUNNING, PAUSE, MENU, OPTIONS, GAMEOVER, TUTORIAL;
@@ -60,7 +63,18 @@ public class GameWorld {
         score = 0;
         deathsoundPlayed = false;
         gameover = false;
+        dataSaved = false;
+        dev = false;
         distance = 0;
+        spookedMobs = AssetLoader.prefs.getInteger("spookedmobs");
+        //test
+
+        lvl = (int) (0.1 * Math.sqrt(AssetLoader.prefs.getInteger("exp")));
+        //formula for exp to level
+        //exp-this / next - this
+        thislvlexp = (float) Math.pow(lvl, 2) * 100;
+        nextlvlexp = (float) Math.pow(lvl + 1, 2) * 100;
+        exptolvl = (AssetLoader.prefs.getInteger("exp") - thislvlexp) / (nextlvlexp - thislvlexp);
     }
 
     public void update(float delta) {
@@ -145,7 +159,7 @@ public class GameWorld {
 
     private void updateRunning(float delta) {
 
-        distance += 0.5;
+        distance += 1;
         mountain.update(delta);
         mountain2.update(delta);
         sun.update(delta);
@@ -159,14 +173,34 @@ public class GameWorld {
 
     private void updateGameOver(float delta) {
 
-        if(!saved){
+        if(!scoreSaved){
 
             if(score > AssetLoader.prefs.getInteger("highscore")){
                 AssetLoader.prefs.putInteger("highscore", score);
-                saved = true;
+                scoreSaved = true;
                 AssetLoader.prefs.flush();
             }
 
+        }
+
+        if(!dataSaved) {
+
+            AssetLoader.prefs.putInteger("exp", AssetLoader.prefs.getInteger("exp") + exp + (score * 10));
+            //level formula sqrt exp * 0.1
+            lvl = (int) (0.1 * Math.sqrt(AssetLoader.prefs.getInteger("exp")));
+            //AssetLoader.prefs.putInteger("lvl", lvl);
+            if(lvl > AssetLoader.prefs.getInteger("lvl")){
+                AssetLoader.prefs.putInteger("lvl", lvl);
+                lvlUp = true;
+            }
+            //formula for exp to level
+            //exp-this / next - this
+            thislvlexp = (float) Math.pow(lvl, 2) * 100;
+            nextlvlexp = (float) Math.pow(lvl + 1, 2) * 100;
+            exptolvl = (AssetLoader.prefs.getInteger("exp") - thislvlexp) / (nextlvlexp - thislvlexp);
+            AssetLoader.prefs.putInteger("spookedmobs", spookedMobs);
+            AssetLoader.prefs.flush();
+            dataSaved = true;
         }
         deathScreen.update(delta);
         ghost.updateDead(delta);
@@ -176,16 +210,19 @@ public class GameWorld {
     }
 
     public void playDeadSound() {
-        com.ikisoft.ghostgame.Helpers.AssetLoader.dead.play();
+        AssetLoader.dead.play();
 
     }
 
     public void reset() {
         score = 0;
+        exp = 0;
         distance = 0;
         deathsoundPlayed = false;
         gameover = false;
-        saved = false;
+        scoreSaved = false;
+        dataSaved = false;
+        lvlUp = false;
         ghost.reset(85, 560);
         spike.reset(1080 + 85, 0);
         scoreHitbox.reset();
@@ -193,8 +230,7 @@ public class GameWorld {
         deathScreen.reset();
         menu.reset();
         options.reset();
-        AssetLoader.font.setColor(1f, 1f, 1f, 1);
-
+        AssetLoader.font2.getData().setScale(1,1);
 
         state = GameState.RUNNING;
 
@@ -288,6 +324,42 @@ public class GameWorld {
         return score;
     }
 
+    public boolean getScoreSaved(){
+        return scoreSaved;
+    }
+
+    public int getExp() {
+        return AssetLoader.prefs.getInteger("exp");
+    }
+
+    public int getLvl(){
+        return lvl;
+    }
+
+    public boolean getLvlUp(){
+        return lvlUp;
+    }
+
+    public float getExptolvl(){
+        //(next-this) / (exp-this)
+
+        return exptolvl;
+    }
+
+    public boolean getDev(){
+        return dev;
+    }
+
+    public void setDev(){
+
+        if(dev){
+            dev = false;
+        }else{
+            dev = true;
+        }
+
+    }
+
     public float getDistance(){
         return distance;
     }
@@ -299,5 +371,18 @@ public class GameWorld {
     public void setState(GameState state){
         this.state = state;
 
+    }
+
+    public void setMobKilled(){
+
+        spookedMobs++;
+    }
+
+    public int getSpookedMobs(){
+        return spookedMobs;
+    }
+
+    public void setExp() {
+        exp += 10;
     }
 }

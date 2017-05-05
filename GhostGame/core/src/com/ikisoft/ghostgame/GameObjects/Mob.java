@@ -71,6 +71,7 @@ public class Mob {
         if(isAlive){
             AssetLoader.mobhit.play();
             jump();
+            gameWorld.setMobKilled();
         }
 
         isAlive = false;

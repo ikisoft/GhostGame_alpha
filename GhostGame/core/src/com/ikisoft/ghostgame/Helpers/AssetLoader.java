@@ -30,8 +30,7 @@ public class AssetLoader {
     public static Texture texture;
     public static Sound dead, spook, jump, score, mobhit, menuclick1, menuclick2;
     public static Music hum;
-    public static BitmapFont font;
-    public static BitmapFont font2;
+    public static BitmapFont font, font2, font3;
     public static Preferences prefs = Gdx.app.getPreferences("SG_prefs");
 
     public static void load(){
@@ -75,9 +74,13 @@ public class AssetLoader {
         hum.play();*/
         font = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font.getData().setScale(2, 2);
+        //font.setColor(0, 0, 0, 1f);
         //font.setColor(0.93f, 0.701f, 0.682f, 1);
         font2 = new BitmapFont(Gdx.files.internal("data/pixel.fnt"));
         font2.getData().setScale(1f, 1f);
+        font3 = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
+        font3.getData().setScale(0.7f, 0.7f);
+        //font3.setColor(0f, 0f, 0f, 1);
 
 
 
@@ -92,6 +95,7 @@ public class AssetLoader {
         mobhit.dispose();
         font.dispose();
         font2.dispose();
+        font3.dispose();
 
     }
 

@@ -3,7 +3,7 @@ package com.ikisoft.ghostgame.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.ikisoft.ghostgame.GhostGame;
+import com.ikisoft.ghostgame.SpookyGhost;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -14,6 +14,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                return new GhostGame();
+                return new SpookyGhost();
         }
 }
