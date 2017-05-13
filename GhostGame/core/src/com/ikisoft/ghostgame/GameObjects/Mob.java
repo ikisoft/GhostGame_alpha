@@ -69,7 +69,7 @@ public class Mob {
     public void die() {
 
         if(isAlive){
-            AssetLoader.mobhit.play();
+            if(!AssetLoader.soundMuted)AssetLoader.mobhit.play();
             jump();
             gameWorld.setMobKilled();
         }

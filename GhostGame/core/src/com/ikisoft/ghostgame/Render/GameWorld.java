@@ -34,7 +34,7 @@ public class GameWorld {
     private TutorialScreen tutorialScreen;
     private int score, exp, lvl, spookedMobs;
     private float exptolvl, thislvlexp, nextlvlexp;
-    private boolean deathsoundPlayed, gameover, scoreSaved, dataSaved, dev, lvlUp;
+    private boolean deathsoundPlayed, gameover, scoreSaved, dataSaved, dev, lvlUp, soundMuted, musicMuted;
     private float distance;
 
     private GameState state;
@@ -211,8 +211,9 @@ public class GameWorld {
 
     public void playDeadSound() {
         AssetLoader.dead.play();
-
     }
+
+
 
     public void reset() {
         score = 0;
@@ -243,7 +244,7 @@ public class GameWorld {
         if (Intersector.overlaps(ghost.getHitbox(), spike.getHitbox())) {
             //just for testing
             if (!deathsoundPlayed) {
-                playDeadSound();
+                if(!AssetLoader.soundMuted)playDeadSound();
                 deathsoundPlayed = true;
             }
             state = GameState.GAMEOVER;
@@ -252,7 +253,7 @@ public class GameWorld {
         }
         if (Intersector.overlaps(ghost.getHitbox(), (scoreHitbox.getHitbox()))) {
             if (!spike.getScored()) {
-                com.ikisoft.ghostgame.Helpers.AssetLoader.score.play();
+                if(!AssetLoader.soundMuted)AssetLoader.score.play();
                 score++;
                 spike.setScored(true);
             }
@@ -265,7 +266,7 @@ public class GameWorld {
             }else if(mob.getIsAlive()){
                 state = GameState.GAMEOVER;
                 if (!deathsoundPlayed) {
-                    playDeadSound();
+                    if(!AssetLoader.soundMuted)playDeadSound();
                     deathsoundPlayed = true;
                 }
             }

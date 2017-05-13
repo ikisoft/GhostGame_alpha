@@ -103,14 +103,14 @@ public class Ghost {
 
     public void jump() {
 
-        AssetLoader.jump.play();
+        if(!AssetLoader.soundMuted)AssetLoader.jump.play();
         velocityY = 20;
         velocityX = 0;
     }
 
     public void spook() {
 
-        AssetLoader.spook.play();
+        if(!AssetLoader.soundMuted)AssetLoader.spook.play();
         velocityX = 30;
         velocityY = 4;
     }

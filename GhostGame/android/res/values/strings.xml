@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">GhostGame</string>
+    <string name="app_name">Spooky Ghost</string>
+
+    <!-- AdMob unit id -->
+    <string name="adView">ca-app-pub-9173827918950149~6921934914</string>
+
 
 </resources>

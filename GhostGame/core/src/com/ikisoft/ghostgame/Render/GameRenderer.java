@@ -50,10 +50,10 @@ public class GameRenderer {
         batch.setProjectionMatrix(cam.combined);
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(cam.combined);
-        logoPos = new Vector2(130, 2500);
-        logoTarget = new Vector2(130, 1820);
+        logoPos = new Vector2(75, 2500);
+        logoTarget = new Vector2(75, 1400);
         scorePos = new Vector2(495 - (30 * length), 1620);
-        scoreTarget = new Vector2(510 - (30 * length), 1150);
+        scoreTarget = new Vector2(510 - (30 * length), 1125);
 
 
     }
@@ -113,6 +113,12 @@ public class GameRenderer {
         batch.enableBlending();
         batch.draw(AssetLoader.options, gameWorld.getOptions().getPosition().x,
                 gameWorld.getOptions().getPosition().y);
+        if(AssetLoader.soundMuted){
+            batch.draw(AssetLoader.toggledOff, 250, 900);
+        }
+        if(AssetLoader.musicMuted){
+            batch.draw(AssetLoader.toggledOff, 600, 900);
+        }
 
     }
 
@@ -121,12 +127,30 @@ public class GameRenderer {
         batch.enableBlending();
         batch.draw(AssetLoader.menu, gameWorld.getMenu().getPosition().x,
                 gameWorld.getMenu().getPosition().y);
+        AssetLoader.font3.draw(batch, "MORE SKINS", 330, 1550);
+        AssetLoader.font3.draw(batch, "COMING SOON!", 300, 1500);
 
-        AssetLoader.font3.draw(batch, "Highscore: " + AssetLoader.prefs.getInteger("highscore"), 240, 1160);
-        AssetLoader.font3.draw(batch, "Total spooks: " + AssetLoader.prefs.getInteger("spookedmobs"), 240, 1100);
-        AssetLoader.font3.draw(batch, "LVL: " + gameWorld.getLvl(), 240, 1040);
-        AssetLoader.font3.draw(batch, "Next lvl: " + gameWorld.getExptolvl() + "/1", 240, 980);
-        AssetLoader.font3.draw(batch, "Total EXP: " + AssetLoader.prefs.getInteger("exp"), 240, 920);
+        //lvl
+        AssetLoader.font4.draw(batch, "" + gameWorld.getLvl(), 650, 1320);
+        //rank
+        if(AssetLoader.prefs.getInteger("spookedmobs") < 10){
+            AssetLoader.font3.draw(batch, "NOOB", 600, 1140);
+        } else if(AssetLoader.prefs.getInteger("spookedmobs") > 10 && AssetLoader.prefs.getInteger("spookedmobs") < 100){
+            AssetLoader.font3.draw(batch, "  LIL\nSPOOKY", 550, 1170);
+
+        }else if(AssetLoader.prefs.getInteger("spookedmobs") > 100 && AssetLoader.prefs.getInteger("spookedmobs") < 1000){
+            AssetLoader.font3.draw(batch, "   A PRETTY\nSCARY GHOST", 450, 1200);
+
+        }else if(AssetLoader.prefs.getInteger("spookedmobs") > 1000 && AssetLoader.prefs.getInteger("spookedmobs") < 10000){
+            AssetLoader.font3.draw(batch, "   YOU HAVE\nNO LIFE", 450, 1240);
+
+        }
+        //highscore
+        AssetLoader.font4.draw(batch, "" + AssetLoader.prefs.getInteger("highscore"), 650, 950);
+        //total spooks
+        AssetLoader.font4.draw(batch, "" + AssetLoader.prefs.getInteger("spookedmobs"), 650, 750);
+        /*AssetLoader.font3.draw(batch, "Next lvl: " + gameWorld.getExptolvl() + "/1", 240, 980);
+        AssetLoader.font3.draw(batch, "Total EXP: " + AssetLoader.prefs.getInteger("exp"), 240, 920)*/;
 
 
     }
@@ -134,7 +158,7 @@ public class GameRenderer {
     private void drawMainMenu() {
         batch.enableBlending();
         logoPos.lerp(logoTarget, 0.1f);
-        AssetLoader.font.draw(batch, "Spooky\n Ghost", logoPos.x, logoPos.y);
+        batch.draw(AssetLoader.logo, logoPos.x, logoPos.y);
         batch.draw(AssetLoader.mainmenu, gameWorld.getMainMenu().getPosition().x,
                 gameWorld.getMainMenu().getPosition().y);
     }

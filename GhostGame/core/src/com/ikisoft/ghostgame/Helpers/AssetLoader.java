@@ -25,13 +25,14 @@ public class AssetLoader {
 
     public static Animation<TextureRegion> ghostAnimation;
     public static TextureRegion background, ground, backMountain, frontMountain, ghost1, ghost2,
-            ghost3, ghostDead, ghostSpooking, sun, gravestone, mainmenu, menu, options, tutorial,
-            shadow, mob1, mobDead, spike, longSpike;
+            ghost3, ghostDead, ghostSpooking, sun, gravestone, mainmenu, menu, options, tutorial, logo,
+            shadow, mob1, mobDead, spike, longSpike, toggledOff;
     public static Texture texture;
     public static Sound dead, spook, jump, score, mobhit, menuclick1, menuclick2;
-    public static Music hum;
-    public static BitmapFont font, font2, font3;
+    public static Music theme;
+    public static BitmapFont font, font2, font3, font4;
     public static Preferences prefs = Gdx.app.getPreferences("SG_prefs");
+    public static boolean soundMuted, musicMuted;
 
     public static void load(){
 
@@ -58,6 +59,8 @@ public class AssetLoader {
         menu = new TextureRegion(texture, 3282, 790, 792, 1236);
         options = new TextureRegion(texture, 2489, 1327, 792, 536);
         tutorial = new TextureRegion(texture, 4075, 790, 792, 1236);
+        toggledOff = new TextureRegion(texture, 1080, 643, 274, 267);
+        logo = new TextureRegion(texture, 3584, 1, 944, 256);
         TextureRegion[] ghosts = {ghost1, ghost2, ghost3};
         ghostAnimation = new Animation(0.3f, ghosts);
         ghostAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
@@ -68,10 +71,11 @@ public class AssetLoader {
         mobhit = Gdx.audio.newSound(Gdx.files.internal("sounds/mobhit.wav"));
         menuclick1 = Gdx.audio.newSound(Gdx.files.internal("sounds/menuclick1.wav"));
         menuclick2 = Gdx.audio.newSound(Gdx.files.internal("sounds/menuclick2.wav"));
+        theme = Gdx.audio.newMusic(Gdx.files.internal("sounds/spookyghost_theme.mp3"));
         /*hum = Gdx.audio.newMusic(Gdx.files.internal("sounds/hum.wav"));
-        hum.setVolume(0.5f);
-        hum.setLooping(true);
-        hum.play();*/
+
+         */
+
         font = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font.getData().setScale(2, 2);
         //font.setColor(0, 0, 0, 1f);
@@ -79,8 +83,20 @@ public class AssetLoader {
         font2 = new BitmapFont(Gdx.files.internal("data/pixel.fnt"));
         font2.getData().setScale(1f, 1f);
         font3 = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
+        font4 = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font3.getData().setScale(0.7f, 0.7f);
+        //font4.getData().setScale(0.7f, 0.7f);
         //font3.setColor(0f, 0f, 0f, 1);
+
+        soundMuted = prefs.getBoolean("sound");
+        musicMuted = prefs.getBoolean("music");
+
+        theme.setVolume(0.5f);
+        theme.setLooping(true);
+        if(!musicMuted) theme.play();
+
+        //prefs.putBoolean("music", false);
+
 
 
 
@@ -96,6 +112,42 @@ public class AssetLoader {
         font.dispose();
         font2.dispose();
         font3.dispose();
+        font4.dispose();
+
+    }
+
+    public static void muteSound(){
+
+        if(!soundMuted){
+            soundMuted = true;
+            prefs.putBoolean("sound", true);
+
+        } else {
+            soundMuted = false;
+            prefs.putBoolean("sound", false);
+
+        }
+
+        prefs.flush();
+
+    }
+
+    public static void muteMusic(){
+
+        if(!musicMuted){
+            musicMuted = true;
+            theme.setVolume(0);
+            prefs.putBoolean("music", true);
+
+        } else {
+            musicMuted = false;
+            prefs.putBoolean("music", false);
+            theme.setVolume(0.5f);
+            theme.play();
+
+        }
+
+        prefs.flush();
 
     }
 

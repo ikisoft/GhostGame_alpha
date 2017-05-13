@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "1007860184276",
+    "firebase_url": "https://spooky-ghost.firebaseio.com",
+    "project_id": "spooky-ghost",
+    "storage_bucket": "spooky-ghost.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007860184276:android:e4a628bcc27bccf1",
+        "android_client_info": {
+          "package_name": "com.spookyghost.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007860184276-8od524tr1a4tmm87c0tkbp29fns2sudf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByRqeU4nhIoZ7luyXrvCt-Q6rK8e5riEM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007860184276:android:a907a9ac88addcc8",
+        "android_client_info": {
+          "package_name": "com.ikisoft.ghostgame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007860184276-6mehkhcnsfu4apqhb5anhngj6ts53jkb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ikisoft.ghostgame",
+            "certificate_hash": "217c3f091159d89289e4e466562e0dbb13c7770f"
+          }
+        },
+        {
+          "client_id": "1007860184276-8od524tr1a4tmm87c0tkbp29fns2sudf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByRqeU4nhIoZ7luyXrvCt-Q6rK8e5riEM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007860184276-8od524tr1a4tmm87c0tkbp29fns2sudf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

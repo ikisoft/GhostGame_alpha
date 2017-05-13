@@ -7,7 +7,10 @@ buildscript {
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.google.gms:google-services:3.0.0'
+
+        //classpath 'com.google.gms:google-services:3.0.0'
     }
 }
 
@@ -17,7 +20,7 @@ allprojects {
 
     version = '1.0'
     ext {
-        appName = "GhostGame"
+        appName = "Spooky Ghost"
         gdxVersion = '1.9.5'
         roboVMVersion = '2.3.0'
         box2DLightsVersion = '1.4'
@@ -51,6 +54,7 @@ project(":desktop") {
 }
 
 project(":android") {
+
     apply plugin: "android"
 
     configurations { natives }
@@ -77,8 +81,15 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 
+        compile 'com.google.firebase:firebase-core:10.2.4'
+        compile 'com.google.firebase:firebase-ads:10.2.4'
+
     }
+    apply plugin: 'com.google.gms.google-services'
+
+
 }
+
 
 project(":html") {
     apply plugin: "gwt"
@@ -102,7 +113,6 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 
     }
