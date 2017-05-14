@@ -12,7 +12,6 @@ public class DeathScreen {
     private Vector2 target;
 
 
-
     public DeathScreen() {
 
         position = new Vector2(100, 2500);
@@ -27,7 +26,7 @@ public class DeathScreen {
 
     }
 
-    public void reset(){
+    public void reset() {
 
         position = new Vector2(100, 2500);
 

@@ -26,16 +26,17 @@ public class Ghost {
         canJump = true;
         isSpooking = false;
         isAlive = true;
-        gravity = 0.5f;
+        //ORIGINAL 0.5f
+        gravity = 0.7f;
 
     }
 
     public void update(float delta) {
 
         isSpooking = false;
+
         //Y pos, jump etc.
         velocityY -= gravity * delta;
-        //if (velocityY < -20) velocityY = -20;
         position.y += velocityY * delta;
         hitbox.y = position.y;
 
@@ -68,20 +69,20 @@ public class Ghost {
         }
     }
 
-    public void updateDead(float delta){
+    public void updateDead(float delta) {
 
         canJump = false;
         velocityY -= gravity * delta;
         position.y += velocityY * delta;
         hitbox.y = position.y;
-        if (position.y < -500){
+        if (position.y < -500) {
             position.y = -500;
         }
     }
 
 
     public void onClick() {
-        if(!isSpooking){
+        if (!isSpooking) {
             if (jumpCount <= 1 && canJump) {
                 jump();
                 jumpCount++;
@@ -103,28 +104,26 @@ public class Ghost {
 
     public void jump() {
 
-        if(!AssetLoader.soundMuted)AssetLoader.jump.play();
-        velocityY = 20;
+        if (!AssetLoader.soundMuted) AssetLoader.jump.play();
+        velocityY = 25;
         velocityX = 0;
     }
 
     public void spook() {
 
-        if(!AssetLoader.soundMuted)AssetLoader.spook.play();
+        if (!AssetLoader.soundMuted) AssetLoader.spook.play();
         velocityX = 30;
         velocityY = 4;
     }
 
-    public void die(){
-        //velocityY = 0;
-        System.out.println("u died");
+    public void die() {
         isAlive = false;
         velocityY = 10;
 
 
     }
 
-    public void reset(float x, float y){
+    public void reset(float x, float y) {
         velocityX = 0;
         jumpCount = 0;
         canJump = true;
@@ -152,7 +151,7 @@ public class Ghost {
         return isSpooking;
     }
 
-    public boolean getIsAlive(){
+    public boolean getIsAlive() {
         return isAlive;
     }
 

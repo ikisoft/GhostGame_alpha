@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.AdRequest;
@@ -18,7 +19,7 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 
-		MobileAds.initialize(this, "ca-app-pub-9173827918950149~6921934914");
+
 
 		super.onCreate(savedInstanceState);
 
@@ -38,9 +39,12 @@ public class AndroidLauncher extends AndroidApplication {
 
 		layout.addView(gameView);
 
-		AdView adView = new AdView(this);
+		final AdView adView = new AdView(this);
+
 		adView.setAdSize(AdSize.SMART_BANNER);
-		adView.setAdUnitId("ca-app-pub-9173827918950149~6921934914");
+		adView.setAdUnitId("ca-app-pub-9173827918950149/2520147716");
+
+
 
 		AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
 		adView.loadAd(adRequestBuilder.build());
@@ -53,7 +57,19 @@ public class AndroidLauncher extends AndroidApplication {
 		adParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		adParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
+
+		adView.setAdListener(new AdListener() {
+			public void onAdLoaded() {
+				adView.setVisibility(View.GONE);
+				adView.setVisibility(View.VISIBLE);
+				adView.bringToFront();
+			}
+		});
+
+
 		setContentView(layout);
+		//MobileAds.initialize(this, "ca-app-pub-9173827918950149/2520147716");
+		//
 
 
 	}

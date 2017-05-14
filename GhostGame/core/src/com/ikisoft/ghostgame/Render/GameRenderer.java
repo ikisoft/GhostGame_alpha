@@ -24,7 +24,6 @@ public class GameRenderer {
     private static OrthographicCamera cam;
     private static float bmPos = 0;
     private static float fmPos = 0;
-    private static FPSLogger drawFPS;
     private float runTime;
     private static SpriteBatch batch;
     private GameWorld gameWorld;
@@ -113,10 +112,10 @@ public class GameRenderer {
         batch.enableBlending();
         batch.draw(AssetLoader.options, gameWorld.getOptions().getPosition().x,
                 gameWorld.getOptions().getPosition().y);
-        if(AssetLoader.soundMuted){
+        if (AssetLoader.soundMuted) {
             batch.draw(AssetLoader.toggledOff, 250, 900);
         }
-        if(AssetLoader.musicMuted){
+        if (AssetLoader.musicMuted) {
             batch.draw(AssetLoader.toggledOff, 600, 900);
         }
 
@@ -133,15 +132,15 @@ public class GameRenderer {
         //lvl
         AssetLoader.font4.draw(batch, "" + gameWorld.getLvl(), 650, 1320);
         //rank
-        if(AssetLoader.prefs.getInteger("spookedmobs") < 10){
+        if (AssetLoader.prefs.getInteger("spookedmobs") < 10) {
             AssetLoader.font3.draw(batch, "NOOB", 600, 1140);
-        } else if(AssetLoader.prefs.getInteger("spookedmobs") > 10 && AssetLoader.prefs.getInteger("spookedmobs") < 100){
+        } else if (AssetLoader.prefs.getInteger("spookedmobs") > 10 && AssetLoader.prefs.getInteger("spookedmobs") < 100) {
             AssetLoader.font3.draw(batch, "  LIL\nSPOOKY", 550, 1170);
 
-        }else if(AssetLoader.prefs.getInteger("spookedmobs") > 100 && AssetLoader.prefs.getInteger("spookedmobs") < 1000){
+        } else if (AssetLoader.prefs.getInteger("spookedmobs") > 100 && AssetLoader.prefs.getInteger("spookedmobs") < 1000) {
             AssetLoader.font3.draw(batch, "   A PRETTY\nSCARY GHOST", 450, 1200);
 
-        }else if(AssetLoader.prefs.getInteger("spookedmobs") > 1000 && AssetLoader.prefs.getInteger("spookedmobs") < 10000){
+        } else if (AssetLoader.prefs.getInteger("spookedmobs") > 1000 && AssetLoader.prefs.getInteger("spookedmobs") < 10000) {
             AssetLoader.font3.draw(batch, "   YOU HAVE\nNO LIFE", 450, 1240);
 
         }
@@ -150,7 +149,8 @@ public class GameRenderer {
         //total spooks
         AssetLoader.font4.draw(batch, "" + AssetLoader.prefs.getInteger("spookedmobs"), 650, 750);
         /*AssetLoader.font3.draw(batch, "Next lvl: " + gameWorld.getExptolvl() + "/1", 240, 980);
-        AssetLoader.font3.draw(batch, "Total EXP: " + AssetLoader.prefs.getInteger("exp"), 240, 920)*/;
+        AssetLoader.font3.draw(batch, "Total EXP: " + AssetLoader.prefs.getInteger("exp"), 240, 920)*/
+        ;
 
 
     }
@@ -170,14 +170,14 @@ public class GameRenderer {
         scorePos.lerp(scoreTarget, 0.1f * delta);
         AssetLoader.font.draw(batch, "" + gameWorld.getScore(), scorePos.x, scorePos.y);
         AssetLoader.font.draw(batch, "" + AssetLoader.prefs.getInteger("highscore"), scorePos.x, scorePos.y - 250);
-        if(gameWorld.getScoreSaved()){
+        if (gameWorld.getScoreSaved()) {
             colorvar += 0.1;
             if (colorvar > 1) colorvar = 0;
             AssetLoader.font2.setColor(1 * colorvar * 0.5f, 1 * colorvar * 1f, 1 * colorvar * 0.5f, 1);
             AssetLoader.font2.getData().setScale(2, 2);
             AssetLoader.font2.draw(batch, "NEW HIGHSCORE!", 150, 400);
         }
-        if(gameWorld.getLvlUp()){
+        if (gameWorld.getLvlUp()) {
             colorvar += 0.1;
             if (colorvar > 1) colorvar = 0;
             AssetLoader.font2.setColor(1 * colorvar * 0.5f, 1 * colorvar * 1f, 1 * colorvar * 0.5f, 1);
@@ -215,10 +215,7 @@ public class GameRenderer {
 
     private void drawScore() {
 
-        //score = gameWorld.getScore() + "";
         batch.enableBlending();
-        //AssetLoader.font.draw(batch, "" + gameWorld.getScore(), 540, 1720);
-
         length = ("" + gameWorld.getScore()).length();
         AssetLoader.font.draw(batch, "" + gameWorld.getScore(), 495 - (30 * length), 1620);
 
@@ -294,10 +291,6 @@ public class GameRenderer {
         batch.draw(AssetLoader.backMountain, gameWorld.getMountain().getPositionX(), 552);
         batch.draw(AssetLoader.backMountain,
                 gameWorld.getMountain().getPositionX() + AssetLoader.backMountain.getRegionWidth() - 1, 552);
-        /*bmPos -= 5 * delta;
-        if (bmPos < -1080) {
-            bmPos = -1;
-        }*/
     }
 
     public void drawFrontMountain(float delta) {

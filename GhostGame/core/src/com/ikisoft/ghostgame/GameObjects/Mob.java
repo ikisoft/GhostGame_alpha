@@ -41,12 +41,9 @@ public class Mob {
 
 
         //lol at myslf
-        if(position.x < -100){
-            /*position.x = + gameWorld.getSpike().getPositionX()
-                    + rand.nextInt(maxSpawn - minSpawn) + minSpawn;*/
+        if (position.x < -100) {
+
             position.x = rand.nextInt(maxSpawn - minSpawn) + minSpawn;
-
-
         }
         //bad code lol
         if (isAlive) {
@@ -58,7 +55,7 @@ public class Mob {
             position.y += velocityY * delta;
             hitbox.x = position.x;
             hitbox.y = position.y;
-            if(position.x < - 100 || position.y < - 100){
+            if (position.x < -100 || position.y < -100) {
                 reset(rand.nextInt(maxSpawn - minSpawn) + minSpawn, 552);
             }
 
@@ -68,8 +65,8 @@ public class Mob {
 
     public void die() {
 
-        if(isAlive){
-            if(!AssetLoader.soundMuted)AssetLoader.mobhit.play();
+        if (isAlive) {
+            if (!AssetLoader.soundMuted) AssetLoader.mobhit.play();
             jump();
             gameWorld.setMobKilled();
         }

@@ -26,24 +26,8 @@ public class GestureHandler implements GestureDetector.GestureListener {
 
     }
 
-
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-
-/*        x = scaleX(x);
-        y = scaleY(y);
-
-        if (gameWorld.getState() == GameWorld.GameState.MAINMENU) {
-            if(x >= 220 && x <= 864 && y >= 750 && y <= 880){
-                gameWorld.reset();
-
-            }
-            System.out.println("x: " + x);
-            System.out.println("y: " + y);
-
-
-            return true;
-        }*/
         return false;
     }
 
@@ -61,7 +45,6 @@ public class GestureHandler implements GestureDetector.GestureListener {
     public boolean longPress(float x, float y) {
 
 
-
         return false;
     }
 
@@ -70,15 +53,14 @@ public class GestureHandler implements GestureDetector.GestureListener {
 
         if (Math.abs(velocityX) > Math.abs(velocityY)) {
             if (velocityX > 0) {
-                if(gameWorld.getState() == GameWorld.GameState.RUNNING){
+                if (gameWorld.getState() == GameWorld.GameState.RUNNING) {
                     ghost.onFling();
-                } else if(gameWorld.getState() == GameWorld.GameState.MENU){
-                    if(!AssetLoader.soundMuted)AssetLoader.menuclick2.play();
+                } else if (gameWorld.getState() == GameWorld.GameState.MENU) {
+                    if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
                     gameWorld.setState(GameWorld.GameState.OPTIONS);
                     gameWorld.getMenu().reset();
-                }
-                else if(gameWorld.getState() == GameWorld.GameState.OPTIONS){
-                    if(!AssetLoader.soundMuted)AssetLoader.menuclick2.play();
+                } else if (gameWorld.getState() == GameWorld.GameState.OPTIONS) {
+                    if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
                     gameWorld.setState(GameWorld.GameState.MENU);
                     gameWorld.getOptions().reset();
 

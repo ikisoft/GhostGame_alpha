@@ -22,7 +22,7 @@ public class TutorialScreen {
         position.lerp(target, 0.1f * delta);
     }
 
-    public void reset(){
+    public void reset() {
 
         position = new Vector2(-500, 400);
     }

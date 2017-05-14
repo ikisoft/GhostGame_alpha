@@ -34,7 +34,7 @@ public class AssetLoader {
     public static Preferences prefs = Gdx.app.getPreferences("SG_prefs");
     public static boolean soundMuted, musicMuted;
 
-    public static void load(){
+    public static void load() {
 
 
         texture = new Texture(Gdx.files.internal("textures.png"));
@@ -72,37 +72,23 @@ public class AssetLoader {
         menuclick1 = Gdx.audio.newSound(Gdx.files.internal("sounds/menuclick1.wav"));
         menuclick2 = Gdx.audio.newSound(Gdx.files.internal("sounds/menuclick2.wav"));
         theme = Gdx.audio.newMusic(Gdx.files.internal("sounds/spookyghost_theme.mp3"));
-        /*hum = Gdx.audio.newMusic(Gdx.files.internal("sounds/hum.wav"));
-
-         */
-
         font = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font.getData().setScale(2, 2);
-        //font.setColor(0, 0, 0, 1f);
-        //font.setColor(0.93f, 0.701f, 0.682f, 1);
         font2 = new BitmapFont(Gdx.files.internal("data/pixel.fnt"));
         font2.getData().setScale(1f, 1f);
         font3 = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font4 = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font3.getData().setScale(0.7f, 0.7f);
-        //font4.getData().setScale(0.7f, 0.7f);
-        //font3.setColor(0f, 0f, 0f, 1);
-
         soundMuted = prefs.getBoolean("sound");
         musicMuted = prefs.getBoolean("music");
-
         theme.setVolume(0.5f);
         theme.setLooping(true);
-        if(!musicMuted) theme.play();
 
-        //prefs.putBoolean("music", false);
-
-
-
+        if (!musicMuted) theme.play();
 
     }
 
-    public static void dispose(){
+    public static void dispose() {
         texture.dispose();
         dead.dispose();
         jump.dispose();
@@ -116,9 +102,9 @@ public class AssetLoader {
 
     }
 
-    public static void muteSound(){
+    public static void muteSound() {
 
-        if(!soundMuted){
+        if (!soundMuted) {
             soundMuted = true;
             prefs.putBoolean("sound", true);
 
@@ -132,9 +118,9 @@ public class AssetLoader {
 
     }
 
-    public static void muteMusic(){
+    public static void muteMusic() {
 
-        if(!musicMuted){
+        if (!musicMuted) {
             musicMuted = true;
             theme.setVolume(0);
             prefs.putBoolean("music", true);
