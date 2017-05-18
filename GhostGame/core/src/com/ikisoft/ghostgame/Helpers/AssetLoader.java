@@ -4,17 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
 
 /**
  * Created by Max on 2.4.2017.
@@ -23,55 +16,233 @@ import com.badlogic.gdx.math.Rectangle;
 public class AssetLoader {
 
 
-    public static Animation<TextureRegion> ghostAnimation;
-    public static TextureRegion background, ground, backMountain, frontMountain, ghost1, ghost2,
-            ghost3, ghostDead, ghostSpooking, sun, gravestone, mainmenu, menu, options, tutorial, logo,
-            shadow, mob1, mobDead, spike, longSpike, toggledOff;
+    public static Animation<TextureRegion> ghostAnimation, bronzeAnimation, silverAnimation, goldAnimation,
+            diamondAnimation;
+    public static TextureRegion
+            ghost1, ghost2, ghost3, ghostDead, ghostSpooking,
+            ghostking1, ghostking2, ghostking3, ghostkingDead, ghostkingSpooking,
+            ghostninja1, ghostninja2, ghostninja3, ghostninjaDead, ghostninjaSpooking,
+            ghostpirate1, ghostpirate2, ghostpirate3, ghostpirateDead, ghostpirateSpooking,
+            ghostpolice1, ghostpolice2, ghostpolice3, ghostpoliceDead, ghostpoliceSpooking,
+            basicGhostSpooking, basicGhostDead,
+            sun, background, ground, backMountain, frontMountain, shadow, mob1, mobDead,
+            jumpingMob, jumpingMobDead,
+            spike, longSpike,
+            gravestone, mainmenu, menu, options, tutorial, pause, logo, toggledOff,
+            kingIcon, ninjaIcon, pirateIcon, selectedIcon,
+            rankStone, rankBronze1, rankBronze2, rankBronze3,
+            rankSilver1, rankSilver2, rankSilver3,
+            rankGold1, rankGold2, rankGold3,
+            rankDiamond1, rankDiamond2, rankDiamond3,
+            expCell,
+            pirateUnlSplash, ninjaUnlSplash, kingUnlSplash;
+
     public static Texture texture;
-    public static Sound dead, spook, jump, score, mobhit, menuclick1, menuclick2;
+    public static Sound dead, spook, ninjaspook, jump, score, mobhit, menuclick1, menuclick2,
+            mobjump, ninjajump;
     public static Music theme;
     public static BitmapFont font, font2, font3, font4;
-    public static Preferences prefs = Gdx.app.getPreferences("SG_prefs");
     public static boolean soundMuted, musicMuted;
+    public  static boolean pirateUnlocked, ninjaUnlocked, kingUnlocked, skinsLoaded;
+
+    //fix this stupid fuckign mess code in next patch
+    //basic = 1, king = 2, ninja 3, pirate = 4, police = 5
+    public static int selectedTexture;
 
     public static void load() {
 
+        loadTextures();
+        skinsLoaded = false;
+        loadSkins();
+        loadAudio();
+        loadFont();
+        loadData();
+    }
 
-        texture = new Texture(Gdx.files.internal("textures.png"));
+    public static void loadSkins() {
+
+        if (!skinsLoaded) {
+            loadGhost();
+            loadKing();
+            loadNinja();
+            loadPirate();
+            loadPolice();
+            skinsLoaded = true;
+        }
+
+        TextureRegion[] ghosts = {ghost1, ghost2, ghost3};
+        TextureRegion[] ghostking = {ghostking1, ghostking2, ghostking3};
+        TextureRegion[] ghostninja = {ghostninja1, ghostninja2, ghostninja3};
+        TextureRegion[] ghostpirate = {ghostpirate1, ghostpirate2, ghostpirate3};
+        TextureRegion[] ghostpolice = {ghostpolice1, ghostpolice2, ghostpolice3};
+
+        selectedTexture = prefs.getInteger("texture");
+        selectSkin(ghosts, ghostking, ghostninja, ghostpirate, ghostpolice);
+        ghostAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+    }
+
+    private static void loadTextures() {
+        //GAMEOBJECTS
+        texture = new Texture(Gdx.files.internal("textures/textureatlas.png"));
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         background = new TextureRegion(texture, 0, 0, 1080, 1920);
         ground = new TextureRegion(texture, 0, 1368, 1080, 552);
         backMountain = new TextureRegion(texture, 1422, 0, 1080, 393);
         frontMountain = new TextureRegion(texture, 2503, 0, 1080, 393);
-        ghost1 = new TextureRegion(texture, 1080, 0, 85, 119);
-        ghost2 = new TextureRegion(texture, 1166, 0, 85, 119);
-        ghost3 = new TextureRegion(texture, 1252, 0, 85, 119);
-        ghostDead = new TextureRegion(texture, 1080, 128, 85, 110);
-        ghostSpooking = new TextureRegion(texture, 1166, 128, 85, 110);
         shadow = new TextureRegion(texture, 1338, 0, 83, 25);
         mob1 = new TextureRegion(texture, 1080, 239, 85, 85);
+        jumpingMob = new TextureRegion(texture, 2560, 1024, 85, 85);
         mobDead = new TextureRegion(texture, 1080, 325, 85, 85);
+        jumpingMobDead = new TextureRegion(texture, 2688, 1024, 85, 85);
         spike = new TextureRegion(texture, 1422, 394, 85, 390);
         longSpike = new TextureRegion(texture, 1508, 394, 85, 770);
         sun = new TextureRegion(texture, 1080, 411, 220, 220);
-        gravestone = new TextureRegion(texture, 1631, 394, 857, 932);
-        mainmenu = new TextureRegion(texture, 2489, 790, 792, 536);
-        menu = new TextureRegion(texture, 3282, 790, 792, 1236);
-        options = new TextureRegion(texture, 2489, 1327, 792, 536);
-        tutorial = new TextureRegion(texture, 4075, 790, 792, 1236);
+        //UI OBJECTS
+        gravestone = new TextureRegion(texture, 2379, 1922, 857, 932);
+        mainmenu = new TextureRegion(texture, 0, 1921, 792, 536);
+        menu = new TextureRegion(texture, 793, 1921, 792, 1236);
+        options = new TextureRegion(texture, 0, 2458, 792, 536);
+        tutorial = new TextureRegion(texture, 1586, 1921, 792, 1236);
         toggledOff = new TextureRegion(texture, 1080, 643, 274, 267);
-        logo = new TextureRegion(texture, 3584, 1, 944, 256);
-        TextureRegion[] ghosts = {ghost1, ghost2, ghost3};
-        ghostAnimation = new Animation(0.3f, ghosts);
-        ghostAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        pause = new TextureRegion(texture, 0, 2995, 792, 338);
+        logo = new TextureRegion(texture, 2503, 394, 944, 259);
+        kingIcon = new TextureRegion(texture, 3328, 3328, 256, 256);
+        ninjaIcon = new TextureRegion(texture, 3584, 3328, 256, 256);
+        pirateIcon = new TextureRegion(texture, 3840, 3328, 256, 256);
+        selectedIcon = new TextureRegion(texture, 3072, 3328, 256, 256);
+        expCell = new TextureRegion(texture, 2560, 896, 128, 128);
+        pirateUnlSplash = new TextureRegion(texture, 2816, 3072, 256, 256);
+        ninjaUnlSplash = new TextureRegion(texture, 2560, 3072, 256, 256);
+        kingUnlSplash = new TextureRegion(texture, 3072, 3072, 256, 256);
+        //ranks
+        rankStone = new TextureRegion(texture, 2560, 3328, 256, 256);
+        rankBronze1 = new TextureRegion(texture, 2560, 3840, 256, 256);
+        rankBronze2 = new TextureRegion(texture, 2816, 3840, 256, 256);
+        rankBronze3 = new TextureRegion(texture, 3072, 3840, 256, 256);
+        TextureRegion[] rankBronze = {rankBronze1, rankBronze2, rankBronze3};
+        bronzeAnimation = new Animation(0.9f, rankBronze);
+        bronzeAnimation.setPlayMode(Animation.PlayMode.LOOP_RANDOM);
+        rankSilver1 = new TextureRegion(texture, 2560, 3584, 256, 256);
+        rankSilver2 = new TextureRegion(texture, 2816, 3584, 256, 256);
+        rankSilver3 = new TextureRegion(texture, 3072, 3584, 256, 256);
+        TextureRegion[] rankSilver = {rankSilver1, rankSilver2, rankSilver3};
+        silverAnimation = new Animation(0.9f, rankSilver);
+        silverAnimation.setPlayMode(Animation.PlayMode.LOOP_RANDOM);
+        rankGold1 = new TextureRegion(texture, 3328, 3840, 256, 256);
+        rankGold2 = new TextureRegion(texture, 3584, 3840, 256, 256);
+        rankGold3 = new TextureRegion(texture, 3840, 3840, 256, 256);
+        TextureRegion[] rankGold = {rankGold1, rankGold2, rankGold3};
+        goldAnimation = new Animation(0.9f, rankGold);
+        goldAnimation.setPlayMode(Animation.PlayMode.LOOP_RANDOM);
+        rankDiamond1 = new TextureRegion(texture, 3328, 3584, 256, 256);
+        rankDiamond2 = new TextureRegion(texture, 3584, 3584, 256, 256);
+        rankDiamond3 = new TextureRegion(texture, 3840, 3584, 256, 256);
+        TextureRegion[] rankDiamond = {rankDiamond1, rankDiamond2, rankDiamond3};
+        diamondAnimation = new Animation(0.9f, rankDiamond);
+        diamondAnimation.setPlayMode(Animation.PlayMode.LOOP_RANDOM);
+    }
+
+    public static void loadGhost() {
+        ghost1 = new TextureRegion(texture, 0, 3712, 128, 128);
+        ghost2 = new TextureRegion(texture, 128, 3712, 128, 128);
+        ghost3 = new TextureRegion(texture, 256, 3712, 128, 128);
+        basicGhostDead = new TextureRegion(texture, 384, 3712, 128, 128);
+        basicGhostSpooking = new TextureRegion(texture, 512, 3712, 128, 128);
+        ghostDead = basicGhostDead;
+        ghostSpooking = basicGhostSpooking;
+
+
+    }
+
+    public static void loadKing() {
+        ghostking1 = new TextureRegion(texture, 0, 3840, 128, 256);
+        ghostking2 = new TextureRegion(texture, 128, 3840, 128, 256);
+        ghostking3 = new TextureRegion(texture, 256, 3840, 128, 256);
+        ghostkingDead = new TextureRegion(texture, 384, 3840, 128, 256);
+        ghostkingSpooking = new TextureRegion(texture, 512, 3840, 128, 256);
+
+    }
+
+    public static void loadNinja() {
+        ghostninja1 = new TextureRegion(texture, 896, 3584, 128, 256);
+        ghostninja2 = new TextureRegion(texture, 1024, 3584, 128, 256);
+        ghostninja3 = new TextureRegion(texture, 1152, 3584, 128, 256);
+        ghostninjaDead = new TextureRegion(texture, 1280, 3584, 128, 256);
+        ghostninjaSpooking = new TextureRegion(texture, 1408, 3584, 256, 256);
+
+    }
+
+    public static void loadPirate() {
+        ghostpirate1 = new TextureRegion(texture, 896, 3840, 128, 256);
+        ghostpirate2 = new TextureRegion(texture, 1024, 3840, 128, 256);
+        ghostpirate3 = new TextureRegion(texture, 1152, 3840, 128, 256);
+        ghostpirateDead = new TextureRegion(texture, 1280, 3840, 128, 256);
+        ghostpirateSpooking = new TextureRegion(texture, 1408, 3840, 128, 256);
+
+    }
+
+    public static void loadPolice() {
+        ghostpolice1 = new TextureRegion(texture, 1792, 3712, 128, 128);
+        ghostpolice2 = new TextureRegion(texture, 1920, 3712, 128, 128);
+        ghostpolice3 = new TextureRegion(texture, 2048, 3712, 128, 128);
+        ghostpoliceDead = new TextureRegion(texture, 2176, 3712, 128, 128);
+        ghostpoliceSpooking = new TextureRegion(texture, 2304, 3712, 128, 128);
+
+    }
+
+    public static void selectSkin(TextureRegion[] ghosts,
+                                  TextureRegion[] ghostking,
+                                  TextureRegion[] ghostninja,
+                                  TextureRegion[] ghostpirate,
+                                  TextureRegion[] ghostpolice) {
+
+        if (prefs.getInteger("texture") == 1) {
+            ghostAnimation = new Animation(0.3f, ghosts);
+            ghostSpooking = basicGhostSpooking;
+            ghostDead = basicGhostDead;
+
+        } else if (prefs.getInteger("texture") == 2) {
+            ghostAnimation = new Animation<TextureRegion>(0.3f, ghostking);
+            ghostSpooking = ghostkingSpooking;
+            ghostDead = ghostkingDead;
+
+        } else if (prefs.getInteger("texture") == 3) {
+            ghostAnimation = new Animation<TextureRegion>(0.3f, ghostninja);
+            ghostSpooking = ghostninjaSpooking;
+            ghostDead = ghostninjaDead;
+
+        } else if (prefs.getInteger("texture") == 4) {
+            ghostAnimation = new Animation<TextureRegion>(0.3f, ghostpirate);
+            ghostSpooking = ghostpirateSpooking;
+            ghostDead = ghostpirateDead;
+
+        } else if (prefs.getInteger("texture") == 5) {
+            ghostAnimation = new Animation<TextureRegion>(0.3f, ghostpolice);
+            ghostSpooking = ghostpoliceSpooking;
+            ghostDead = ghostpoliceDead;
+        }
+    }
+
+    public static void loadAudio() {
         dead = Gdx.audio.newSound(Gdx.files.internal("sounds/dead.wav"));
         jump = Gdx.audio.newSound(Gdx.files.internal("sounds/jump.wav"));
         spook = Gdx.audio.newSound(Gdx.files.internal("sounds/spook.wav"));
+        ninjaspook = Gdx.audio.newSound(Gdx.files.internal("sounds/ninja_spook.wav"));
+        ninjajump = Gdx.audio.newSound(Gdx.files.internal("sounds/ninja_jump.wav"));
         score = Gdx.audio.newSound(Gdx.files.internal("sounds/score.wav"));
         mobhit = Gdx.audio.newSound(Gdx.files.internal("sounds/mobhit.wav"));
         menuclick1 = Gdx.audio.newSound(Gdx.files.internal("sounds/menuclick1.wav"));
         menuclick2 = Gdx.audio.newSound(Gdx.files.internal("sounds/menuclick2.wav"));
+        mobjump = Gdx.audio.newSound(Gdx.files.internal("sounds/jumpingmob_jump.wav"));
         theme = Gdx.audio.newMusic(Gdx.files.internal("sounds/spookyghost_theme.mp3"));
+        soundMuted = prefs.getBoolean("sound");
+        musicMuted = prefs.getBoolean("music");
+        theme.setVolume(0.5f);
+        theme.setLooping(true);
+        if (!musicMuted) theme.play();
+    }
+
+    private static void loadFont() {
         font = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font.getData().setScale(2, 2);
         font2 = new BitmapFont(Gdx.files.internal("data/pixel.fnt"));
@@ -79,12 +250,13 @@ public class AssetLoader {
         font3 = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font4 = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font3.getData().setScale(0.7f, 0.7f);
-        soundMuted = prefs.getBoolean("sound");
-        musicMuted = prefs.getBoolean("music");
-        theme.setVolume(0.5f);
-        theme.setLooping(true);
+    }
 
-        if (!musicMuted) theme.play();
+    private static void loadData() {
+
+        pirateUnlocked = prefs.getBoolean("pirateUnlocked");
+        ninjaUnlocked = prefs.getBoolean("ninjaUnlocked");
+        kingUnlocked = prefs.getBoolean("kingUnlocked");
 
     }
 
@@ -92,9 +264,15 @@ public class AssetLoader {
         texture.dispose();
         dead.dispose();
         jump.dispose();
+        ninjajump.dispose();
+        ninjaspook.dispose();
+        mobjump.dispose();
         spook.dispose();
         score.dispose();
         mobhit.dispose();
+        menuclick1.dispose();
+        menuclick2.dispose();
+        theme.dispose();
         font.dispose();
         font2.dispose();
         font3.dispose();

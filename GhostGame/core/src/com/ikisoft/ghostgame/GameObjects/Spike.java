@@ -17,7 +17,7 @@ public class Spike {
     private Vector2 position;
     private Random rand;
     private GameWorld gameWorld;
-    private float difficultyScale, speed;
+    private float distance, speed;
     private boolean scored;
 
 
@@ -38,8 +38,8 @@ public class Spike {
     public void update(float delta) {
 
         //increases difficulty over time, cap at 2000 (unit unknown)
-        difficultyScale = gameWorld.getDistance();
-        if(difficultyScale > 2500)difficultyScale = 2500;
+        distance = gameWorld.getDistance();
+        if(distance > 2500) distance = 2500;
         //
         position.x -= speed * delta;
         hitbox.x = position.x + 35;
@@ -51,17 +51,17 @@ public class Spike {
     public void spawn() {
 
         scored = false;
-        if(difficultyScale < 1500){
+        if(distance < 1500){
             position.x = 1400 + rand.nextInt(300 + 300) - 300;
         }else{
             position.x = 1500 + rand.nextInt(400 + 300) - 300;
         }
 
         if(position.y > 450){
-            position.y = rand.nextInt((int) (370 * difficultyScale / 2500));
+            position.y = rand.nextInt((int) (300 * distance / 2500));
 
         }else{
-            position.y = rand.nextInt((int) (500 * difficultyScale / 2500));
+            position.y = rand.nextInt((int) (400 * distance / 2500));
 
         }
         //lol what the fuck :D

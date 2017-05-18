@@ -18,7 +18,23 @@ public class Ghost {
     private int jumpCount;
     private boolean canJump, isSpooking, isAlive;
 
+    private GhostState ghostState;
+
+    public enum GhostState {
+        GHOST, KING, NINJA, PIRATE;
+    }
+
     public Ghost(float x, float y) {
+
+        if (AssetLoader.selectedTexture == 1) {
+            ghostState = GhostState.GHOST;
+        } else if (AssetLoader.selectedTexture == 2) {
+            ghostState = GhostState.KING;
+        } else if (AssetLoader.selectedTexture == 3) {
+            ghostState = GhostState.NINJA;
+        } else if (AssetLoader.selectedTexture == 4) {
+            ghostState = GhostState.PIRATE;
+        }
 
         position = new Vector2(x, y);
         hitbox = new Rectangle(position.x, position.y, 85, 119);
@@ -51,9 +67,27 @@ public class Ghost {
         }
 
         //x pos - Spook
+        switch (ghostState){
+            case GHOST:
+                velocityX -= 2 * delta;
+                if (velocityX < -20) velocityX = -20;
+                break;
+            case KING:
+                velocityX -= 2 * delta;
+                if (velocityX < -20) velocityX = -20;
+                break;
+            case NINJA:
+                velocityX -= 6 * delta;
+                if (velocityX < -60) velocityX = -60;
+                break;
+            case PIRATE:
+                velocityX -= 2 * delta;
+                if (velocityX < -20) velocityX = -20;
+                break;
+            default:
+                break;
+        }
 
-        velocityX -= 2 * delta;
-        if (velocityX < -20) velocityX = -20;
 
         position.x += velocityX * delta;
         hitbox.x = position.x;
@@ -80,23 +114,74 @@ public class Ghost {
         }
     }
 
-
+    //what the fuck am I coding??????????????????
     public void onClick() {
-        if (!isSpooking) {
-            if (jumpCount <= 1 && canJump) {
-                jump();
-                jumpCount++;
 
-            } else {
-                jumpCount = 0;
-                canJump = false;
-            }
+        switch (ghostState) {
+            case GHOST:
+                if (!isSpooking) {
+                    if (jumpCount <= 1 && canJump) {
+                        jump();
+                        jumpCount++;
+
+                    } else {
+                        jumpCount = 0;
+                        canJump = false;
+                    }
+                }
+                break;
+            case KING:
+                if (!isSpooking) {
+                    if (jumpCount <= 2 && canJump) {
+                        jump();
+                        jumpCount++;
+
+                    } else {
+                        jumpCount = 0;
+                        canJump = false;
+                    }
+                }
+                break;
+            case NINJA:
+                if (!isSpooking) {
+                    if (jumpCount <= 1 && canJump) {
+                        jump();
+                        jumpCount++;
+
+                    } else {
+                        jumpCount = 0;
+                        canJump = false;
+                    }
+                }
+                break;
+            case PIRATE:
+                if (!isSpooking) {
+                    if (jumpCount <= 1 && canJump) {
+                        jump();
+                        jumpCount++;
+
+                    } else {
+                        jumpCount = 0;
+                        canJump = false;
+                    }
+                }
+                break;
+            default:
+                if (!isSpooking) {
+                    if (jumpCount <= 1 && canJump) {
+                        jump();
+                        jumpCount++;
+
+                    } else {
+                        jumpCount = 0;
+                        canJump = false;
+                    }
+                }
+                break;
         }
-
     }
 
     public void onFling() {
-
         if (position.x == 85 && isAlive) {
             spook();
         }
@@ -104,23 +189,70 @@ public class Ghost {
 
     public void jump() {
 
-        if (!AssetLoader.soundMuted) AssetLoader.jump.play();
-        velocityY = 25;
-        velocityX = 0;
+        switch (ghostState) {
+            case GHOST:
+                if (!AssetLoader.soundMuted) AssetLoader.jump.play();
+                velocityY = 24;
+                velocityX = 0;
+                break;
+            case KING:
+                if (!AssetLoader.soundMuted) AssetLoader.jump.play();
+                velocityY = 24;
+                velocityX = 0;
+                break;
+            case NINJA:
+                if (!AssetLoader.soundMuted) AssetLoader.ninjajump.play();
+                velocityY = 26;
+                velocityX = 0;
+                break;
+            case PIRATE:
+                if (!AssetLoader.soundMuted) AssetLoader.jump.play();
+                velocityY = 24;
+                velocityX = 0;
+                break;
+
+            default:
+                break;
+        }
+
+
     }
 
     public void spook() {
 
-        if (!AssetLoader.soundMuted) AssetLoader.spook.play();
-        velocityX = 30;
-        velocityY = 4;
+        switch (ghostState) {
+            case GHOST:
+                if (!AssetLoader.soundMuted) AssetLoader.spook.play();
+                velocityX = 30;
+                velocityY = 4;
+
+                break;
+            case KING:
+                if (!AssetLoader.soundMuted) AssetLoader.spook.play();
+                velocityX = 30;
+                velocityY = 4;
+
+                break;
+            case NINJA:
+                if (!AssetLoader.soundMuted) AssetLoader.ninjaspook.play();
+                velocityX = 80;
+                velocityY = 8;
+
+                break;
+            case PIRATE:
+                if (!AssetLoader.soundMuted) AssetLoader.spook.play();
+                velocityX = 30;
+                velocityY = 4;
+                break;
+
+            default:
+                break;
+        }
     }
 
     public void die() {
         isAlive = false;
         velocityY = 10;
-
-
     }
 
     public void reset(float x, float y) {
@@ -153,6 +285,11 @@ public class Ghost {
 
     public boolean getIsAlive() {
         return isAlive;
+    }
+
+    public void setGhostState(GhostState ghostState) {
+        this.ghostState = ghostState;
+
     }
 
 }

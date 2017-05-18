@@ -72,6 +72,9 @@ public class SpookyGhost extends Game {
 
     @Override
     public void pause() {
+        if(world.getState() == GameWorld.GameState.RUNNING){
+            world.setState(GameWorld.GameState.PAUSE);
+        }
     }
 
 }

@@ -1,7 +1,9 @@
 package com.ikisoft.ghostgame.Render;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.ikisoft.ghostgame.GameObjects.Ghost;
+import com.ikisoft.ghostgame.GameObjects.JumpingMob;
 import com.ikisoft.ghostgame.GameObjects.Mob;
 import com.ikisoft.ghostgame.GameObjects.ScoreHitbox;
 import com.ikisoft.ghostgame.GameObjects.ScrollingBg;
@@ -23,6 +25,7 @@ public class GameWorld {
 
     private Ghost ghost;
     private Mob mob;
+    private JumpingMob jumpingMob;
     private Spike spike;
     private ScoreHitbox scoreHitbox;
     private ScrollingBg mountain, mountain2;
@@ -34,8 +37,9 @@ public class GameWorld {
     private TutorialScreen tutorialScreen;
     private int score, exp, lvl, spookedMobs;
     private float exptolvl, thislvlexp, nextlvlexp;
-    private boolean deathsoundPlayed, gameover, scoreSaved, dataSaved, dev, lvlUp, soundMuted, musicMuted;
-    private float distance;
+    private boolean deathsoundPlayed, gameover, scoreSaved, dataSaved, dev, lvlUp,
+    pirateUnlocked, ninjaUnlocked, kingUnlocked;
+    private int distance;
 
     private GameState state;
 
@@ -59,21 +63,25 @@ public class GameWorld {
         options = new Options();
         tutorialScreen = new TutorialScreen();
         mob = new Mob(-100, 552, this);
+        jumpingMob = new JumpingMob(1200, 552, this);
         score = 0;
         deathsoundPlayed = false;
         gameover = false;
         dataSaved = false;
+        pirateUnlocked = false;
+        ninjaUnlocked = false;
+        kingUnlocked = false;
         dev = false;
         distance = 0;
-        spookedMobs = AssetLoader.prefs.getInteger("spookedmobs");
+        spookedMobs = Gdx.app.getPreferences("SG_prefs").getInteger("spookedmobs");
         //test
 
-        lvl = (int) (0.1 * Math.sqrt(AssetLoader.prefs.getInteger("exp")));
+        lvl = (int) (0.1 * Math.sqrt(Gdx.app.getPreferences("SG_prefs").getInteger("exp")));
         //formula for exp to level
         //exp-this / next - this
         thislvlexp = (float) Math.pow(lvl, 2) * 100;
         nextlvlexp = (float) Math.pow(lvl + 1, 2) * 100;
-        exptolvl = (AssetLoader.prefs.getInteger("exp") - thislvlexp) / (nextlvlexp - thislvlexp);
+        exptolvl = (Gdx.app.getPreferences("SG_prefs").getInteger("exp") - thislvlexp) / (nextlvlexp - thislvlexp);
     }
 
     public void update(float delta) {
@@ -86,6 +94,7 @@ public class GameWorld {
                 updateRunning(delta);
                 break;
             case PAUSE:
+                updatePause(delta);
                 break;
             case MENU:
                 updateMenu(delta);
@@ -108,6 +117,12 @@ public class GameWorld {
             default:
                 break;
         }
+    }
+
+    private void updatePause(float delta) {
+
+
+        sun.update(delta);
     }
 
     private void updateTutorial(float delta) {
@@ -167,51 +182,81 @@ public class GameWorld {
         spike.update(delta);
         scoreHitbox.update();
         mob.update(delta);
+        if(distance > 1000) jumpingMob.update(delta);
 
     }
 
     private void updateGameOver(float delta) {
 
         if (!scoreSaved) {
-
-            if (score > AssetLoader.prefs.getInteger("highscore")) {
-                AssetLoader.prefs.putInteger("highscore", score);
+            if (score > Gdx.app.getPreferences("SG_prefs").getInteger("highscore")) {
+                Gdx.app.getPreferences("SG_prefs").putInteger("highscore", score);
                 scoreSaved = true;
-                AssetLoader.prefs.flush();
+                Gdx.app.getPreferences("SG_prefs").flush();
             }
-
         }
-
         if (!dataSaved) {
 
-            AssetLoader.prefs.putInteger("exp", AssetLoader.prefs.getInteger("exp") + exp + (score * 10));
+            if(AssetLoader.selectedTexture == 4){
+                Gdx.app.getPreferences("SG_prefs").putInteger("exp", (int) (Gdx.app.getPreferences("SG_prefs").getInteger("exp") + (exp + (score * 10)) * 1.5));
+            } else {
+                AssetLoader.prefs.putInteger("exp", Gdx.app.getPreferences("SG_prefs").getInteger("exp") + exp + (score * 10));
+            }
             //level formula sqrt exp * 0.1
-            lvl = (int) (0.1 * Math.sqrt(AssetLoader.prefs.getInteger("exp")));
-            //AssetLoader.prefs.putInteger("lvl", lvl);
-            if (lvl > AssetLoader.prefs.getInteger("lvl")) {
-                AssetLoader.prefs.putInteger("lvl", lvl);
+            lvl = (int) (0.1 * Math.sqrt(Gdx.app.getPreferences("SG_prefs").getInteger("exp")));
+            if (lvl > Gdx.app.getPreferences("SG_prefs").getInteger("lvl")) {
+                Gdx.app.getPreferences("SG_prefs").putInteger("lvl", lvl);
                 lvlUp = true;
             }
             //formula for exp to level
             //exp-this / next - this
             thislvlexp = (float) Math.pow(lvl, 2) * 100;
             nextlvlexp = (float) Math.pow(lvl + 1, 2) * 100;
-            exptolvl = (AssetLoader.prefs.getInteger("exp") - thislvlexp) / (nextlvlexp - thislvlexp);
-            AssetLoader.prefs.putInteger("spookedmobs", spookedMobs);
-            AssetLoader.prefs.flush();
+            exptolvl = (Gdx.app.getPreferences("SG_prefs").getInteger("exp") - thislvlexp) / (nextlvlexp - thislvlexp);
+            Gdx.app.getPreferences("SG_prefs").putInteger("spookedmobs", spookedMobs);
+
+            if(!Gdx.app.getPreferences("SG_prefs").getBoolean("pirateUnlocked"))unlockPirate();
+            if(!Gdx.app.getPreferences("SG_prefs").getBoolean("ninjaUnlocked"))unlockNinja();
+            if(!Gdx.app.getPreferences("SG_prefs").getBoolean("kingUnlocked"))unlockKing();
+
+            Gdx.app.getPreferences("SG_prefs").flush();
             dataSaved = true;
         }
         deathScreen.update(delta);
         ghost.updateDead(delta);
         sun.update(delta);
+    }
 
+    private void unlockPirate() {
+        if(Gdx.app.getPreferences("SG_prefs").getInteger("lvl") >= 5){
+            Gdx.app.getPreferences("SG_prefs").putBoolean("pirateUnlocked", true);
+            pirateUnlocked = true;
+        }
 
     }
+
+    private void unlockNinja(){
+        if(Gdx.app.getPreferences("SG_prefs").getInteger("spookedmobs") >= 100){
+            Gdx.app.getPreferences("SG_prefs").putBoolean("ninjaUnlocked", true);
+            ninjaUnlocked = true;
+        }
+
+    }
+
+    private void unlockKing(){
+        if(Gdx.app.getPreferences("SG_prefs").getInteger("spookedmobs") >= 500
+                && Gdx.app.getPreferences("SG_prefs").getInteger("lvl") > 10){
+            Gdx.app.getPreferences("SG_prefs").putBoolean("kingUnlocked", true);
+            kingUnlocked = true;
+        }
+
+    }
+
+
 
     public void playDeadSound() {
         AssetLoader.dead.play();
     }
-
 
     public void reset() {
         score = 0;
@@ -226,15 +271,16 @@ public class GameWorld {
         spike.reset(1080 + 85, 0);
         scoreHitbox.reset();
         mob.reset(-100, 552);
+        jumpingMob.reset(1200, 552);
         deathScreen.reset();
         menu.reset();
         options.reset();
         AssetLoader.font2.getData().setScale(1, 1);
-
         state = GameState.RUNNING;
-
+        pirateUnlocked = false;
+        ninjaUnlocked = false;
+        kingUnlocked = false;
     }
-
 
     public void collision() {
 
@@ -246,7 +292,6 @@ public class GameWorld {
                 deathsoundPlayed = true;
             }
             state = GameState.GAMEOVER;
-
             //Ghost and score hitbox
         }
         if (Intersector.overlaps(ghost.getHitbox(), (scoreHitbox.getHitbox()))) {
@@ -269,6 +314,19 @@ public class GameWorld {
                 }
             }
         }
+        //ghost and jumping mob
+        if (Intersector.overlaps(ghost.getHitbox(), jumpingMob.getHitbox())) {
+
+            if (ghost.getIsSpooking()) {
+                jumpingMob.die();
+            } else if (jumpingMob.getIsAlive()) {
+                state = GameState.GAMEOVER;
+                if (!deathsoundPlayed) {
+                    if (!AssetLoader.soundMuted) playDeadSound();
+                    deathsoundPlayed = true;
+                }
+            }
+        }
     }
 
     public Ghost getGhost() {
@@ -277,6 +335,10 @@ public class GameWorld {
 
     public Mob getMob() {
         return mob;
+    }
+
+    public JumpingMob getJumpingMob(){
+        return jumpingMob;
     }
 
     public Spike getSpike() {
@@ -339,9 +401,20 @@ public class GameWorld {
         return lvlUp;
     }
 
+    public boolean getPirateUnl(){
+        return pirateUnlocked;
+    }
+
+    public boolean getNinjaUnl(){
+        return ninjaUnlocked;
+    }
+
+    public boolean getKingUnl(){
+        return kingUnlocked;
+    }
+
     public float getExptolvl() {
         //(next-this) / (exp-this)
-
         return exptolvl;
     }
 
@@ -359,7 +432,7 @@ public class GameWorld {
 
     }
 
-    public float getDistance() {
+    public int getDistance() {
         return distance;
     }
 
@@ -369,11 +442,9 @@ public class GameWorld {
 
     public void setState(GameState state) {
         this.state = state;
-
     }
 
     public void setMobKilled() {
-
         spookedMobs++;
     }
 
