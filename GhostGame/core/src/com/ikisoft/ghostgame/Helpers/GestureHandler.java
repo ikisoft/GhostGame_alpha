@@ -56,11 +56,11 @@ public class GestureHandler implements GestureDetector.GestureListener {
                 if (gameWorld.getState() == GameWorld.GameState.RUNNING) {
                     ghost.onFling();
                 } else if (gameWorld.getState() == GameWorld.GameState.MENU) {
-                    if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+                    if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
                     gameWorld.setState(GameWorld.GameState.OPTIONS);
                     gameWorld.getMenu().reset();
                 } else if (gameWorld.getState() == GameWorld.GameState.OPTIONS) {
-                    if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+                    if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
                     gameWorld.setState(GameWorld.GameState.MENU);
                     gameWorld.getOptions().reset();
 

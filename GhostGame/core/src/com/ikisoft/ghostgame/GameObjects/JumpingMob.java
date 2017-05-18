@@ -3,6 +3,7 @@ package com.ikisoft.ghostgame.GameObjects;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.ikisoft.ghostgame.Helpers.AssetLoader;
+import com.ikisoft.ghostgame.Helpers.DataHandler;
 import com.ikisoft.ghostgame.Render.GameWorld;
 
 import java.util.Random;
@@ -81,7 +82,7 @@ public class JumpingMob{
     public void die() {
 
         if (isAlive) {
-            if (!AssetLoader.soundMuted) AssetLoader.mobhit.play();
+            if (!DataHandler.soundMuted) AssetLoader.mobhit.play();
             jump();
             gameWorld.setMobKilled();
         }
@@ -94,7 +95,7 @@ public class JumpingMob{
     public void jump() {
 
         if(!soundPlayed){
-            if (!AssetLoader.soundMuted && position.x < 1080 && position.x > 0){
+            if (!DataHandler.soundMuted && position.x < 1080 && position.x > 0){
                 AssetLoader.mobjump.play();
             }
         }

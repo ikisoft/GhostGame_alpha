@@ -3,6 +3,7 @@ package com.ikisoft.ghostgame.GameObjects;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.ikisoft.ghostgame.Helpers.AssetLoader;
+import com.ikisoft.ghostgame.Helpers.DataHandler;
 import com.ikisoft.ghostgame.Render.GameWorld;
 
 import java.util.Random;
@@ -66,7 +67,7 @@ public class Mob {
     public void die() {
 
         if (isAlive) {
-            if (!AssetLoader.soundMuted) AssetLoader.mobhit.play();
+            if (!DataHandler.soundMuted) AssetLoader.mobhit.play();
             jump();
             gameWorld.setMobKilled();
         }

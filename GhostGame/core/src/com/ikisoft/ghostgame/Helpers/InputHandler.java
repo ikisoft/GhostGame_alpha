@@ -74,7 +74,7 @@ public class InputHandler implements InputProcessor {
         System.out.println("y: " + y);*/
 
         if (gameWorld.getState() != GameWorld.GameState.RUNNING) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick1.play();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick1.play();
             return true;
         }
         return false;
@@ -89,8 +89,8 @@ public class InputHandler implements InputProcessor {
         x = (int) scaleX(x);
         y = (int) scaleY(y);
 
-        System.out.println("x: " + x);
-        System.out.println("y: " + y);
+ /*       System.out.println("x: " + x);
+        System.out.println("y: " + y);*/
 
         if (gameWorld.getState() == GameWorld.GameState.MAINMENU) {
             mainMenu(x, y);
@@ -111,8 +111,8 @@ public class InputHandler implements InputProcessor {
 
     private void pause(int x, int y) {
 
-        if (uiButton.isDown(x, y, 580, 1570)){
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+        if (uiButton.isDown(x, y, 580, 1570)) {
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
             gameWorld.setState(GameWorld.GameState.RUNNING);
         }
 
@@ -122,20 +122,20 @@ public class InputHandler implements InputProcessor {
         //PLAY
         if (mainMenuButton.isDown(x, y, 556, 802)) {
             if (!tutorialShown) {
-                if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+                if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
                 gameWorld.setState(GameWorld.GameState.TUTORIAL);
                 tutorialShown = true;
             } else {
-                if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+                if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
                 gameWorld.reset();
             }
 
         } else if (mainMenuButton.isDown(x, y, 556, 976)) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
             gameWorld.setState(GameWorld.GameState.MENU);
 
         } else if (mainMenuButton.isDown(x, y, 556, 1148)) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
             gameWorld.setState(GameWorld.GameState.OPTIONS);
 
         }
@@ -144,89 +144,80 @@ public class InputHandler implements InputProcessor {
     private void menu(int x, int y) {
         //200, 1230
         if (uiButton.isDown(x, y, 406, 1428)) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
-            if(Gdx.app.getPreferences("SG_prefs").getInteger("texture") != AssetLoader.selectedTexture){
-                AssetLoader.selectedTexture = Gdx.app.getPreferences("SG_prefs").getInteger("texture");
-            }
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
+
             gameWorld.reset();
+
         } else if (uiButton.isDown(x, y, 752, 1428)) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
+
             gameWorld.setState(GameWorld.GameState.OPTIONS);
-            if(Gdx.app.getPreferences("SG_prefs").getInteger("texture") != AssetLoader.selectedTexture){
-                AssetLoader.selectedTexture = Gdx.app.getPreferences("SG_prefs").getInteger("texture");
-            }
             gameWorld.getMenu().reset();
 
-            //pirate
         }
 
-        if (skinIconButton.isDown(x, y, 498, 904)) {
+        //ghost
+        if (skinIconButton.isDown(x, y, 344, 904)) {
 
-            if (Gdx.app.getPreferences("SG_prefs").getBoolean("pirateUnlocked")) {
-                AssetLoader.selectedTexture = 4;
-                System.out.println("pirate clicked");
-                Gdx.app.getPreferences("SG_prefs").putInteger("texture", 4);
+            DataHandler.selectedCharacter = 0;
+            DataHandler.selectedCharacterPreview = 0;
+            gameWorld.getGhost().setGhostState(Ghost.GhostState.GHOST);
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
 
-                AssetLoader.loadSkins();
-                Gdx.app.getPreferences("SG_prefs").flush();
+            //pirate
+        } else if (skinIconButton.isDown(x, y, 498, 904)) {
+
+            if (DataHandler.pirateUnlocked) {
+                DataHandler.selectedCharacter = 1;
+                DataHandler.selectedCharacterPreview = 1;
                 gameWorld.getGhost().setGhostState(Ghost.GhostState.PIRATE);
-                if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+                if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
+
             } else {
-                AssetLoader.selectedTexture = 4;
+                DataHandler.selectedCharacterPreview = 1;
             }
             //ninja
         } else if (skinIconButton.isDown(x, y, 654, 904)) {
 
-            if (Gdx.app.getPreferences("SG_prefs").getBoolean("ninjaUnlocked")) {
-                Gdx.app.getPreferences("SG_prefs").putInteger("texture", 3);
-                AssetLoader.selectedTexture = 3;
-                AssetLoader.loadSkins();
-                Gdx.app.getPreferences("SG_prefs").flush();
+            if (DataHandler.ninjaUnlocked) {
+                DataHandler.selectedCharacter = 2;
+                DataHandler.selectedCharacterPreview = 2;
+
                 gameWorld.getGhost().setGhostState(Ghost.GhostState.NINJA);
-                if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+                if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
+
             } else {
-                AssetLoader.selectedTexture = 3;
+                DataHandler.selectedCharacterPreview = 2;
             }
             //king
         } else if (skinIconButton.isDown(x, y, 810, 904)) {
 
-            if (Gdx.app.getPreferences("SG_prefs").getBoolean("kingUnlocked")) {
-                Gdx.app.getPreferences("SG_prefs").putInteger("texture", 2);
-                AssetLoader.selectedTexture = 2;
-                AssetLoader.loadSkins();
-                Gdx.app.getPreferences("SG_prefs").flush();
+            if (DataHandler.kingUnlocked) {
+                DataHandler.selectedCharacter = 3;
+                DataHandler.selectedCharacterPreview = 3;
+
                 gameWorld.getGhost().setGhostState(Ghost.GhostState.KING);
-                if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+                if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
+
             } else {
-                AssetLoader.selectedTexture = 2;
+                DataHandler.selectedCharacterPreview = 3;
             }
-            //basic
-        } else if (skinIconButton.isDown(x, y, 344, 904)) {
-            System.out.println("basic clicked");
-            Gdx.app.getPreferences("SG_prefs").putInteger("texture", 1);
-            AssetLoader.selectedTexture = 1;
-            AssetLoader.loadSkins();
-            Gdx.app.getPreferences("SG_prefs").flush();
-            gameWorld.getGhost().setGhostState(Ghost.GhostState.GHOST);
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
-
-
         }
     }
 
     private void gameover(int x, int y) {
 
         if (uiButton.isDown(x, y, 316, 1328)) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
             gameWorld.reset();
             //GO TO MENU
 
         } else if (uiButton.isDown(x, y, 606, 1328)) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
             gameWorld.setState(GameWorld.GameState.MENU);
             //GO TO OPTIONS
         } else if (uiButton.isDown(x, y, 850, 1328)) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
             gameWorld.setState(GameWorld.GameState.OPTIONS);
         }
     }
@@ -234,21 +225,21 @@ public class InputHandler implements InputProcessor {
     private void options(int x, int y) {
 
         if (uiButton.isDown(x, y, 402, 1138)) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
             gameWorld.reset();
 
         } else if (uiButton.isDown(x, y, 734, 1138)) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
             gameWorld.setState(GameWorld.GameState.MENU);
             gameWorld.getOptions().reset();
 
         } else if (uiButton.isDown(x, y, 402, 900)) {
-            AssetLoader.muteSound();
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            DataHandler.muteSound();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
 
         } else if (uiButton.isDown(x, y, 734, 900)) {
-            AssetLoader.muteMusic();
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            DataHandler.muteMusic();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
 
         }
     }
@@ -256,7 +247,7 @@ public class InputHandler implements InputProcessor {
     private void tutorial(int x, int y) {
 
         if (uiButton.isDown(x, y, 586, 1430)) {
-            if (!AssetLoader.soundMuted) AssetLoader.menuclick2.play();
+            if (!DataHandler.soundMuted) AssetLoader.menuclick2.play();
             gameWorld.reset();
         }
     }

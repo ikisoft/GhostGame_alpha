@@ -1,22 +1,17 @@
 package com.ikisoft.ghostgame.Render;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.ikisoft.ghostgame.GameObjects.JumpingMob;
-import com.ikisoft.ghostgame.GameObjects.Mob;
 import com.ikisoft.ghostgame.Helpers.AssetLoader;
+import com.ikisoft.ghostgame.Helpers.DataHandler;
 
-import sun.security.provider.SHA;
 
-import static com.ikisoft.ghostgame.Helpers.AssetLoader.jumpingMob;
-import static com.ikisoft.ghostgame.Helpers.AssetLoader.prefs;
-import static com.ikisoft.ghostgame.Helpers.AssetLoader.texture;
+
 
 /**
  * Created by Max on 2.4.2017.
@@ -31,7 +26,7 @@ public class GameRenderer {
     private static SpriteBatch batch;
     private GameWorld gameWorld;
     private ShapeRenderer shapeRenderer;
-    private BitmapFont font = new BitmapFont();
+    private BitmapFont font;
     private float colorvar, colorvar2 = 0;
     private float expHeight, expHeight2;
     private int length;
@@ -56,6 +51,7 @@ public class GameRenderer {
         unlSplashTarget = new Vector2(412, 1600);
         expHeight = gameWorld.getMob().getY();
         expHeight2 = gameWorld.getJumpingMob().getY();
+        font = new BitmapFont();
     }
 
     public void render(float delta) {
@@ -116,10 +112,10 @@ public class GameRenderer {
         batch.enableBlending();
         batch.draw(AssetLoader.options, gameWorld.getOptions().getPosition().x,
                 gameWorld.getOptions().getPosition().y);
-        if (AssetLoader.soundMuted) {
+        if (DataHandler.soundMuted) {
             batch.draw(AssetLoader.toggledOff, 250, 900);
         }
-        if (AssetLoader.musicMuted) {
+        if (DataHandler.musicMuted) {
             batch.draw(AssetLoader.toggledOff, 600, 900);
         }
     }
@@ -131,17 +127,19 @@ public class GameRenderer {
         batch.draw(AssetLoader.menu, gameWorld.getMenu().getPosition().x,
                 gameWorld.getMenu().getPosition().y);
         //draw exp
-        AssetLoader.font3.draw(batch, AssetLoader.prefs.getInteger("exp") + " exp", gameWorld.getMenu().getPosition().x + 225,
+        AssetLoader.font3.draw(batch, DataHandler.exp + " exp", gameWorld.getMenu().getPosition().x + 225,
                 gameWorld.getMenu().getPosition().y + 1075);
 
         //draw highscore
-        length = ("" + AssetLoader.prefs.getInteger("highscore")).length();
-        AssetLoader.font4.draw(batch, "" + AssetLoader.prefs.getInteger("highscore"),
+        length = ("" + DataHandler.highscore).length();
+
+        AssetLoader.font4.draw(batch, "" + DataHandler.highscore,
                 gameWorld.getMenu().getPosition().x + 250 - (30 * length)
                 , gameWorld.getMenu().getPosition().y + 825);
         //draw spooked mobs
-        length = ("" + AssetLoader.prefs.getInteger("spookedmobs")).length();
-        AssetLoader.font4.draw(batch, "" + AssetLoader.prefs.getInteger("spookedmobs"),
+        length = ("" + DataHandler.spookedMobs).length();
+
+        AssetLoader.font4.draw(batch, "" + DataHandler.spookedMobs,
                 gameWorld.getMenu().getPosition().x + 585 - (30 * length)
                 , gameWorld.getMenu().getPosition().y + 825);
         //Draw lvl
@@ -181,7 +179,7 @@ public class GameRenderer {
                 gameWorld.getDeathScreen().getPosition().y);
         scorePos.lerp(scoreTarget, 0.1f * delta);
         AssetLoader.font.draw(batch, "" + gameWorld.getScore(), scorePos.x, scorePos.y);
-        AssetLoader.font.draw(batch, "" + AssetLoader.prefs.getInteger("highscore"), scorePos.x, scorePos.y - 250);
+        AssetLoader.font.draw(batch, "" + DataHandler.highscore, scorePos.x, scorePos.y - 250);
         if (gameWorld.getScoreSaved()) {
             /*colorvar += 0.1;
             if (colorvar > 1) colorvar = 0;
@@ -232,7 +230,7 @@ public class GameRenderer {
         AssetLoader.font2.setColor(1 * colorvar * 0.5f, 1 * colorvar * 1f, 1 * colorvar * 0.5f,
                 1 * (gameWorld.getMob().getY() / expHeight) / 2);
         if (!gameWorld.getMob().getIsAlive()) {
-            if (AssetLoader.selectedTexture == 4) {
+            if (DataHandler.selectedCharacter == 1) {
                 AssetLoader.font2.draw(batch, "15 EXP", gameWorld.getMob().getX(), expHeight);
             } else {
                 AssetLoader.font2.draw(batch, "10 EXP", gameWorld.getMob().getX(), expHeight);
@@ -250,7 +248,7 @@ public class GameRenderer {
         AssetLoader.font2.setColor(1 * colorvar2 * 0.5f, 1 * colorvar2 * 1f, 1 * colorvar2 * 0.5f,
                 1 * (gameWorld.getJumpingMob().getY() / expHeight2) / 2);
         if (!gameWorld.getJumpingMob().getIsAlive()) {
-            if (AssetLoader.selectedTexture == 4) {
+            if (DataHandler.selectedCharacter == 1) {
                 AssetLoader.font2.draw(batch, "30 EXP", gameWorld.getMob().getX(), expHeight);
             } else {
                 AssetLoader.font2.draw(batch, "20 EXP", gameWorld.getJumpingMob().getX(), expHeight2);
@@ -306,7 +304,7 @@ public class GameRenderer {
         batch.setColor(1f, 1f, 1f, 1f);
         //Draw JUMPING MOB
         if (gameWorld.getJumpingMob().getIsAlive()) {
-            batch.draw(jumpingMob, gameWorld.getJumpingMob().getX(),
+            batch.draw(AssetLoader.jumpingMob, gameWorld.getJumpingMob().getX(),
                     gameWorld.getJumpingMob().getY());
         } else {
             batch.draw(AssetLoader.jumpingMobDead, gameWorld.getJumpingMob().getX(),
@@ -330,16 +328,16 @@ public class GameRenderer {
         //Ghost death effect, if dead paint red else white
         if (!gameWorld.getGhost().getIsAlive()) {
             batch.setColor(1f, 0.5f, 0.5f, 0.5f);
-            batch.draw(AssetLoader.ghostDead,
+            batch.draw(AssetLoader.getDeadTexture(),
                     gameWorld.getGhost().getX() - 33, gameWorld.getGhost().getY());
         } else {
             if (!gameWorld.getGhost().getIsSpooking()) {
                 batch.setColor(1.0f, 1.0f, 1.0f, 0.8f);
-                batch.draw(AssetLoader.ghostAnimation.getKeyFrame(runTime),
+                batch.draw(AssetLoader.getAnimation(runTime),
                         gameWorld.getGhost().getX() - 33, gameWorld.getGhost().getY());
             } else {
                 batch.setColor(1.0f, 1.0f, 1.0f, 0.8f * (85 / gameWorld.getGhost().getX()));
-                batch.draw(AssetLoader.ghostSpooking,
+                batch.draw(AssetLoader.getSpookingTexture(),
                         gameWorld.getGhost().getX() - 33, gameWorld.getGhost().getY());
 
             }
@@ -369,33 +367,33 @@ public class GameRenderer {
 
     private void drawRanks() {
         //draw ranks
-        if (AssetLoader.prefs.getInteger("spookedmobs") < 10) {
+        if (DataHandler.spookedMobs < 10) {
             batch.draw(AssetLoader.rankStone, gameWorld.getMenu().getPosition().x + 65,
                     gameWorld.getMenu().getPosition().y + 1000);
             AssetLoader.font3.draw(batch, "noob", gameWorld.getMenu().getPosition().x + 225,
                     gameWorld.getMenu().getPosition().y + 1030);
-        } else if (AssetLoader.prefs.getInteger("spookedmobs") >= 10
-                && AssetLoader.prefs.getInteger("spookedmobs") < 100) {
+        } else if (DataHandler.spookedMobs >= 10
+                && DataHandler.spookedMobs < 100) {
             batch.draw(AssetLoader.bronzeAnimation.getKeyFrame(runTime), gameWorld.getMenu().getPosition().x + 65,
                     gameWorld.getMenu().getPosition().y + 1000);
             AssetLoader.font3.draw(batch, "bronze", gameWorld.getMenu().getPosition().x + 225,
                     gameWorld.getMenu().getPosition().y + 1030);
 
-        } else if (AssetLoader.prefs.getInteger("spookedmobs") >= 100
-                && AssetLoader.prefs.getInteger("spookedmobs") < 500) {
+        } else if (DataHandler.spookedMobs >= 100
+                && DataHandler.spookedMobs < 500) {
             batch.draw(AssetLoader.silverAnimation.getKeyFrame(runTime), gameWorld.getMenu().getPosition().x + 65,
                     gameWorld.getMenu().getPosition().y + 1000);
             AssetLoader.font3.draw(batch, "silver", gameWorld.getMenu().getPosition().x + 225,
                     gameWorld.getMenu().getPosition().y + 1030);
 
-        } else if (AssetLoader.prefs.getInteger("spookedmobs") >= 500
-                && AssetLoader.prefs.getInteger("spookedmobs") < 2500) {
+        } else if (DataHandler.spookedMobs >= 500
+                && DataHandler.spookedMobs < 2500) {
             batch.draw(AssetLoader.goldAnimation.getKeyFrame(runTime), gameWorld.getMenu().getPosition().x + 65,
                     gameWorld.getMenu().getPosition().y + 1000);
             AssetLoader.font3.draw(batch, "gold", gameWorld.getMenu().getPosition().x + 225,
                     gameWorld.getMenu().getPosition().y + 1030);
 
-        } else if (AssetLoader.prefs.getInteger("spookedmobs") >= 2500) {
+        } else if (DataHandler.spookedMobs >= 2500) {
             batch.draw(AssetLoader.diamondAnimation.getKeyFrame(runTime), gameWorld.getMenu().getPosition().x + 65,
                     gameWorld.getMenu().getPosition().y + 1000);
             AssetLoader.font3.draw(batch, "diamond", gameWorld.getMenu().getPosition().x + 225,
@@ -404,9 +402,11 @@ public class GameRenderer {
         }
     }
 
+
+    //wow this code sucks
     private void drawSkinIcons() {
 
-        if (AssetLoader.selectedTexture == 1) {
+        if (DataHandler.selectedCharacterPreview == 0) {
             batch.draw(AssetLoader.selectedIcon, gameWorld.getMenu().getPosition().x + 127, 826);
             //info text
             AssetLoader.font4.draw(batch, "Spooky", gameWorld.getMenu().getPosition().x + 225,
@@ -415,7 +415,13 @@ public class GameRenderer {
                     gameWorld.getMenu().getPosition().x + 75, 775);
         }
 
-        if (AssetLoader.selectedTexture == 4 && !prefs.getBoolean("pirateUnlocked")) {
+        //pirate
+
+            if(DataHandler.pirateUnlocked){
+                batch.draw(AssetLoader.pirateIcon, gameWorld.getMenu().getPosition().x + 283, 826);
+            }
+
+        if (DataHandler.selectedCharacterPreview == 1 && !DataHandler.pirateUnlocked) {
             batch.draw(AssetLoader.selectedIcon, gameWorld.getMenu().getPosition().x + 283, 826);
             AssetLoader.font4.draw(batch, "Cpt. Spook", gameWorld.getMenu().getPosition().x + 115,
                     905);
@@ -424,11 +430,9 @@ public class GameRenderer {
                     gameWorld.getMenu().getPosition().x + 75, 775);
 
 
-        } else if (prefs.getBoolean("pirateUnlocked")) {
-            //batch.draw(AssetLoader.pirateIcon, 433, 826);
-            batch.draw(AssetLoader.pirateIcon, gameWorld.getMenu().getPosition().x + 283, 826);
+        } else if (DataHandler.selectedCharacterPreview == 1 && DataHandler.pirateUnlocked) {
 
-            if (AssetLoader.selectedTexture == 4) {
+            if (DataHandler.selectedCharacter == 1) {
                 batch.draw(AssetLoader.selectedIcon, gameWorld.getMenu().getPosition().x + 283, 826);
                 //info text
                 AssetLoader.font4.draw(batch, "Cpt. Spook", gameWorld.getMenu().getPosition().x + 115,
@@ -439,7 +443,14 @@ public class GameRenderer {
 
         }
 
-        if (AssetLoader.selectedTexture == 3 && !prefs.getBoolean("ninjaUnlocked")) {
+        //ninja
+
+        if(DataHandler.ninjaUnlocked){
+            batch.draw(AssetLoader.ninjaIcon, gameWorld.getMenu().getPosition().x + 436, 826);
+        }
+
+
+        if (DataHandler.selectedCharacterPreview == 2 && !DataHandler.ninjaUnlocked) {
             batch.draw(AssetLoader.selectedIcon, gameWorld.getMenu().getPosition().x + 436, 826);
             AssetLoader.font4.draw(batch, "Ghost Ninja", gameWorld.getMenu().getPosition().x + 67,
                     905);
@@ -448,11 +459,9 @@ public class GameRenderer {
                     gameWorld.getMenu().getPosition().x + 75, 775);
 
 
-        } else if (prefs.getBoolean("ninjaUnlocked")) {
-            //batch.draw(AssetLoader.ninjaIcon, 586, 826);
-            batch.draw(AssetLoader.ninjaIcon, gameWorld.getMenu().getPosition().x + 436, 826);
+        } else if (DataHandler.selectedCharacterPreview == 2 && DataHandler.ninjaUnlocked) {
 
-            if (AssetLoader.selectedTexture == 3) {
+            if (DataHandler.selectedCharacter == 2) {
                 batch.draw(AssetLoader.selectedIcon, gameWorld.getMenu().getPosition().x + 436, 826);
                 //info text
                 AssetLoader.font4.draw(batch, "Ghost Ninja", gameWorld.getMenu().getPosition().x + 67,
@@ -463,7 +472,13 @@ public class GameRenderer {
 
         }
 
-        if (AssetLoader.selectedTexture == 2 && !prefs.getBoolean("kingUnlocked")) {
+        //king
+
+        if(DataHandler.kingUnlocked){
+            batch.draw(AssetLoader.kingIcon, gameWorld.getMenu().getPosition().x + 592, 826);
+        }
+
+        if (DataHandler.selectedCharacterPreview == 3 && !DataHandler.kingUnlocked) {
             batch.draw(AssetLoader.selectedIcon, gameWorld.getMenu().getPosition().x + 592, 826);
             AssetLoader.font4.draw(batch, "King Ghost", gameWorld.getMenu().getPosition().x + 105,
                     905);
@@ -472,11 +487,9 @@ public class GameRenderer {
                             "to unlock",
                     gameWorld.getMenu().getPosition().x + 75, 775);
 
-        } else if (prefs.getBoolean("kingUnlocked")) {
-            //batch.draw(AssetLoader.kingIcon, 742, 826);
-            batch.draw(AssetLoader.kingIcon, gameWorld.getMenu().getPosition().x + 592, 826);
+        } else if (DataHandler.selectedCharacterPreview == 3 && DataHandler.kingUnlocked) {
 
-            if (AssetLoader.selectedTexture == 2) {
+            if (DataHandler.selectedCharacter == 3) {
                 batch.draw(AssetLoader.selectedIcon, gameWorld.getMenu().getPosition().x + 592, 826);
                 //info text
                 AssetLoader.font4.draw(batch, "King Ghost", gameWorld.getMenu().getPosition().x + 105,
@@ -527,7 +540,7 @@ public class GameRenderer {
         font.draw(batch, "Distance: " + String.valueOf(gameWorld.getDistance()), 0, 1750);
         font.draw(batch, "Version: 2.0", 0, 1710);
         //not valid in death screen, too irrelevant to be fixed, data is correct (?)
-        font.draw(batch, "EXP:" + String.valueOf(AssetLoader.prefs.getInteger("exp")), 0, 1670);
+        font.draw(batch, "EXP:" + DataHandler.exp, 0, 1670);
         batch.end();
     }
 

@@ -10,6 +10,7 @@ import com.ikisoft.ghostgame.GameObjects.ScrollingBg;
 import com.ikisoft.ghostgame.GameObjects.Spike;
 import com.ikisoft.ghostgame.GameObjects.Sun;
 import com.ikisoft.ghostgame.Helpers.AssetLoader;
+import com.ikisoft.ghostgame.Helpers.DataHandler;
 import com.ikisoft.ghostgame.UI_Objects.DeathScreen;
 import com.ikisoft.ghostgame.UI_Objects.MainMenu;
 import com.ikisoft.ghostgame.UI_Objects.Menu;
@@ -67,21 +68,17 @@ public class GameWorld {
         score = 0;
         deathsoundPlayed = false;
         gameover = false;
-        dataSaved = false;
-        pirateUnlocked = false;
-        ninjaUnlocked = false;
-        kingUnlocked = false;
         dev = false;
         distance = 0;
-        spookedMobs = Gdx.app.getPreferences("SG_prefs").getInteger("spookedmobs");
+
         //test
 
-        lvl = (int) (0.1 * Math.sqrt(Gdx.app.getPreferences("SG_prefs").getInteger("exp")));
+        lvl = (int) (0.1 * Math.sqrt(DataHandler.exp));
         //formula for exp to level
         //exp-this / next - this
         thislvlexp = (float) Math.pow(lvl, 2) * 100;
         nextlvlexp = (float) Math.pow(lvl + 1, 2) * 100;
-        exptolvl = (Gdx.app.getPreferences("SG_prefs").getInteger("exp") - thislvlexp) / (nextlvlexp - thislvlexp);
+        exptolvl = (DataHandler.exp - thislvlexp) / (nextlvlexp - thislvlexp);
     }
 
     public void update(float delta) {
@@ -189,70 +186,71 @@ public class GameWorld {
     private void updateGameOver(float delta) {
 
         if (!scoreSaved) {
-            if (score > Gdx.app.getPreferences("SG_prefs").getInteger("highscore")) {
-                Gdx.app.getPreferences("SG_prefs").putInteger("highscore", score);
+            if (score > DataHandler.highscore) {
+                DataHandler.highscore = score;
                 scoreSaved = true;
-                Gdx.app.getPreferences("SG_prefs").flush();
             }
         }
+
         if (!dataSaved) {
 
-            if(AssetLoader.selectedTexture == 4){
-                Gdx.app.getPreferences("SG_prefs").putInteger("exp", (int) (Gdx.app.getPreferences("SG_prefs").getInteger("exp") + (exp + (score * 10)) * 1.5));
+            if(DataHandler.selectedCharacter == 1){
+                //if pirate multiply exp at the end of run by 1.5
+                DataHandler.exp = (int) (DataHandler.exp + (exp + (score * 10)) * 1.5);
             } else {
-                AssetLoader.prefs.putInteger("exp", Gdx.app.getPreferences("SG_prefs").getInteger("exp") + exp + (score * 10));
+                DataHandler.exp = (int) (DataHandler.exp + (exp + (score * 10)));
             }
             //level formula sqrt exp * 0.1
-            lvl = (int) (0.1 * Math.sqrt(Gdx.app.getPreferences("SG_prefs").getInteger("exp")));
-            if (lvl > Gdx.app.getPreferences("SG_prefs").getInteger("lvl")) {
-                Gdx.app.getPreferences("SG_prefs").putInteger("lvl", lvl);
+            lvl = (int) (0.1 * Math.sqrt(DataHandler.exp));
+            if (lvl > DataHandler.lvl) {
+                DataHandler.lvl = lvl;
                 lvlUp = true;
             }
             //formula for exp to level
             //exp-this / next - this
             thislvlexp = (float) Math.pow(lvl, 2) * 100;
             nextlvlexp = (float) Math.pow(lvl + 1, 2) * 100;
-            exptolvl = (Gdx.app.getPreferences("SG_prefs").getInteger("exp") - thislvlexp) / (nextlvlexp - thislvlexp);
-            Gdx.app.getPreferences("SG_prefs").putInteger("spookedmobs", spookedMobs);
+            exptolvl = (DataHandler.exp - thislvlexp) / (nextlvlexp - thislvlexp);
+            DataHandler.spookedMobs += spookedMobs;
 
-            if(!Gdx.app.getPreferences("SG_prefs").getBoolean("pirateUnlocked"))unlockPirate();
-            if(!Gdx.app.getPreferences("SG_prefs").getBoolean("ninjaUnlocked"))unlockNinja();
-            if(!Gdx.app.getPreferences("SG_prefs").getBoolean("kingUnlocked"))unlockKing();
+            if(!DataHandler.pirateUnlocked)unlockPirate();
+            if(!DataHandler.ninjaUnlocked)unlockNinja();
+            if(!DataHandler.kingUnlocked)unlockKing();
 
-            Gdx.app.getPreferences("SG_prefs").flush();
             dataSaved = true;
         }
+
         deathScreen.update(delta);
         ghost.updateDead(delta);
         sun.update(delta);
     }
 
     private void unlockPirate() {
-        if(Gdx.app.getPreferences("SG_prefs").getInteger("lvl") >= 5){
-            Gdx.app.getPreferences("SG_prefs").putBoolean("pirateUnlocked", true);
+        if(DataHandler.lvl >= 5){
+            DataHandler.pirateUnlocked = true;
+            //for splash animation
             pirateUnlocked = true;
         }
 
     }
 
     private void unlockNinja(){
-        if(Gdx.app.getPreferences("SG_prefs").getInteger("spookedmobs") >= 100){
-            Gdx.app.getPreferences("SG_prefs").putBoolean("ninjaUnlocked", true);
+        if(DataHandler.spookedMobs >= 100){
+            DataHandler.ninjaUnlocked = true;
+            //for spalsh animation
             ninjaUnlocked = true;
         }
 
     }
 
     private void unlockKing(){
-        if(Gdx.app.getPreferences("SG_prefs").getInteger("spookedmobs") >= 500
-                && Gdx.app.getPreferences("SG_prefs").getInteger("lvl") > 10){
-            Gdx.app.getPreferences("SG_prefs").putBoolean("kingUnlocked", true);
+        if(DataHandler.spookedMobs >= 500
+                && DataHandler.lvl >= 10){
+            DataHandler.kingUnlocked = true;
             kingUnlocked = true;
         }
 
     }
-
-
 
     public void playDeadSound() {
         AssetLoader.dead.play();
@@ -288,7 +286,7 @@ public class GameWorld {
         if (Intersector.overlaps(ghost.getHitbox(), spike.getHitbox())) {
             //just for testing
             if (!deathsoundPlayed) {
-                if (!AssetLoader.soundMuted) playDeadSound();
+                if (!DataHandler.soundMuted) playDeadSound();
                 deathsoundPlayed = true;
             }
             state = GameState.GAMEOVER;
@@ -296,7 +294,7 @@ public class GameWorld {
         }
         if (Intersector.overlaps(ghost.getHitbox(), (scoreHitbox.getHitbox()))) {
             if (!spike.getScored()) {
-                if (!AssetLoader.soundMuted) AssetLoader.score.play();
+                if (!DataHandler.soundMuted) AssetLoader.score.play();
                 score++;
                 spike.setScored(true);
             }
@@ -309,7 +307,7 @@ public class GameWorld {
             } else if (mob.getIsAlive()) {
                 state = GameState.GAMEOVER;
                 if (!deathsoundPlayed) {
-                    if (!AssetLoader.soundMuted) playDeadSound();
+                    if (!DataHandler.soundMuted) playDeadSound();
                     deathsoundPlayed = true;
                 }
             }
@@ -322,7 +320,7 @@ public class GameWorld {
             } else if (jumpingMob.getIsAlive()) {
                 state = GameState.GAMEOVER;
                 if (!deathsoundPlayed) {
-                    if (!AssetLoader.soundMuted) playDeadSound();
+                    if (!DataHandler.soundMuted) playDeadSound();
                     deathsoundPlayed = true;
                 }
             }
@@ -387,10 +385,6 @@ public class GameWorld {
 
     public boolean getScoreSaved() {
         return scoreSaved;
-    }
-
-    public int getExp() {
-        return AssetLoader.prefs.getInteger("exp");
     }
 
     public int getLvl() {

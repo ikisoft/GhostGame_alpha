@@ -3,6 +3,7 @@ package com.ikisoft.ghostgame.GameObjects;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.ikisoft.ghostgame.Helpers.AssetLoader;
+import com.ikisoft.ghostgame.Helpers.DataHandler;
 
 /**
  * Created by Max on 2.4.2017.
@@ -26,13 +27,13 @@ public class Ghost {
 
     public Ghost(float x, float y) {
 
-        if (AssetLoader.selectedTexture == 1) {
+        if (DataHandler.selectedCharacter == 0) {
             ghostState = GhostState.GHOST;
-        } else if (AssetLoader.selectedTexture == 2) {
+        } else if (DataHandler.selectedCharacter == 1) {
             ghostState = GhostState.KING;
-        } else if (AssetLoader.selectedTexture == 3) {
+        } else if (DataHandler.selectedCharacter == 2) {
             ghostState = GhostState.NINJA;
-        } else if (AssetLoader.selectedTexture == 4) {
+        } else if (DataHandler.selectedCharacter == 3) {
             ghostState = GhostState.PIRATE;
         }
 
@@ -191,22 +192,22 @@ public class Ghost {
 
         switch (ghostState) {
             case GHOST:
-                if (!AssetLoader.soundMuted) AssetLoader.jump.play();
+                if (!DataHandler.soundMuted) AssetLoader.jump.play();
                 velocityY = 24;
                 velocityX = 0;
                 break;
             case KING:
-                if (!AssetLoader.soundMuted) AssetLoader.jump.play();
+                if (!DataHandler.soundMuted) AssetLoader.jump.play();
                 velocityY = 24;
                 velocityX = 0;
                 break;
             case NINJA:
-                if (!AssetLoader.soundMuted) AssetLoader.ninjajump.play();
+                if (!DataHandler.soundMuted) AssetLoader.ninjajump.play();
                 velocityY = 26;
                 velocityX = 0;
                 break;
             case PIRATE:
-                if (!AssetLoader.soundMuted) AssetLoader.jump.play();
+                if (!DataHandler.soundMuted) AssetLoader.jump.play();
                 velocityY = 24;
                 velocityX = 0;
                 break;
@@ -222,25 +223,25 @@ public class Ghost {
 
         switch (ghostState) {
             case GHOST:
-                if (!AssetLoader.soundMuted) AssetLoader.spook.play();
+                if (!DataHandler.soundMuted) AssetLoader.spook.play();
                 velocityX = 30;
                 velocityY = 4;
 
                 break;
             case KING:
-                if (!AssetLoader.soundMuted) AssetLoader.spook.play();
+                if (!DataHandler.soundMuted) AssetLoader.spook.play();
                 velocityX = 30;
                 velocityY = 4;
 
                 break;
             case NINJA:
-                if (!AssetLoader.soundMuted) AssetLoader.ninjaspook.play();
+                if (!DataHandler.soundMuted) AssetLoader.ninjaspook.play();
                 velocityX = 80;
                 velocityY = 8;
 
                 break;
             case PIRATE:
-                if (!AssetLoader.soundMuted) AssetLoader.spook.play();
+                if (!DataHandler.soundMuted) AssetLoader.spook.play();
                 velocityX = 30;
                 velocityY = 4;
                 break;

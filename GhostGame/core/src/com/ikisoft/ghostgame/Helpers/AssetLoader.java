@@ -16,70 +16,129 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class AssetLoader {
 
 
-    public static Animation<TextureRegion> ghostAnimation, bronzeAnimation, silverAnimation, goldAnimation,
-            diamondAnimation;
-    public static TextureRegion
-            ghost1, ghost2, ghost3, ghostDead, ghostSpooking,
-            ghostking1, ghostking2, ghostking3, ghostkingDead, ghostkingSpooking,
-            ghostninja1, ghostninja2, ghostninja3, ghostninjaDead, ghostninjaSpooking,
-            ghostpirate1, ghostpirate2, ghostpirate3, ghostpirateDead, ghostpirateSpooking,
-            ghostpolice1, ghostpolice2, ghostpolice3, ghostpoliceDead, ghostpoliceSpooking,
+    public static Animation<TextureRegion> ghostAnimation,
+            bronzeAnimation,
+            silverAnimation,
+            goldAnimation,
+            diamondAnimation,
+            ghostPirateAnimation,
+            ghostKingAnimation,
+            ghostNinjaAnimation;
+
+    public static TextureRegion ghost1,
+            ghost2,
+            ghost3,
+            ghostDead,
+            ghostSpooking,
+            ghostking1,
+            ghostking2,
+            ghostking3,
+            ghostkingDead,
+            ghostkingSpooking,
+            ghostninja1,
+            ghostninja2,
+            ghostninja3,
+            ghostninjaDead,
+            ghostninjaSpooking,
+            ghostpirate1,
+            ghostpirate2,
+            ghostpirate3,
+            ghostpirateDead,
+            ghostpirateSpooking,
+            ghostpolice1,
+            ghostpolice2,
+            ghostpolice3,
+            ghostpoliceDead,
+            ghostpoliceSpooking,
             basicGhostSpooking, basicGhostDead,
-            sun, background, ground, backMountain, frontMountain, shadow, mob1, mobDead,
-            jumpingMob, jumpingMobDead,
-            spike, longSpike,
-            gravestone, mainmenu, menu, options, tutorial, pause, logo, toggledOff,
-            kingIcon, ninjaIcon, pirateIcon, selectedIcon,
-            rankStone, rankBronze1, rankBronze2, rankBronze3,
-            rankSilver1, rankSilver2, rankSilver3,
-            rankGold1, rankGold2, rankGold3,
-            rankDiamond1, rankDiamond2, rankDiamond3,
+            sun,
+            background,
+            ground,
+            backMountain,
+            frontMountain,
+            shadow,
+            mob1,
+            mobDead,
+            jumpingMob,
+            jumpingMobDead,
+            spike,
+            longSpike,
+            gravestone,
+            mainmenu,
+            menu,
+            options,
+            tutorial,
+            pause,
+            logo,
+            toggledOff,
+            kingIcon,
+            ninjaIcon,
+            pirateIcon,
+            selectedIcon,
+            rankStone,
+            rankBronze1,
+            rankBronze2,
+            rankBronze3,
+            rankSilver1,
+            rankSilver2,
+            rankSilver3,
+            rankGold1,
+            rankGold2,
+            rankGold3,
+            rankDiamond1,
+            rankDiamond2,
+            rankDiamond3,
             expCell,
-            pirateUnlSplash, ninjaUnlSplash, kingUnlSplash;
+            pirateUnlSplash,
+            ninjaUnlSplash,
+            kingUnlSplash;
 
     public static Texture texture;
-    public static Sound dead, spook, ninjaspook, jump, score, mobhit, menuclick1, menuclick2,
-            mobjump, ninjajump;
-    public static Music theme;
-    public static BitmapFont font, font2, font3, font4;
-    public static boolean soundMuted, musicMuted;
-    public  static boolean pirateUnlocked, ninjaUnlocked, kingUnlocked, skinsLoaded;
 
-    //fix this stupid fuckign mess code in next patch
-    //basic = 1, king = 2, ninja 3, pirate = 4, police = 5
-    public static int selectedTexture;
+    public static Sound dead,
+            spook,
+            ninjaspook,
+            jump,
+            score,
+            mobhit,
+            menuclick1,
+            menuclick2,
+            mobjump,
+            ninjajump;
+
+    public static Music theme;
+
+    public static BitmapFont font,
+            font2,
+            font3,
+            font4;
 
     public static void load() {
 
         loadTextures();
-        skinsLoaded = false;
-        loadSkins();
         loadAudio();
         loadFont();
-        loadData();
-    }
-
-    public static void loadSkins() {
-
-        if (!skinsLoaded) {
-            loadGhost();
-            loadKing();
-            loadNinja();
-            loadPirate();
-            loadPolice();
-            skinsLoaded = true;
-        }
-
-        TextureRegion[] ghosts = {ghost1, ghost2, ghost3};
-        TextureRegion[] ghostking = {ghostking1, ghostking2, ghostking3};
-        TextureRegion[] ghostninja = {ghostninja1, ghostninja2, ghostninja3};
-        TextureRegion[] ghostpirate = {ghostpirate1, ghostpirate2, ghostpirate3};
-        TextureRegion[] ghostpolice = {ghostpolice1, ghostpolice2, ghostpolice3};
-
-        selectedTexture = prefs.getInteger("texture");
-        selectSkin(ghosts, ghostking, ghostninja, ghostpirate, ghostpolice);
+        loadGhost();
+        loadKing();
+        loadNinja();
+        loadPirate();
+        //loadPolice();
+        TextureRegion[] ghost = {ghost1, ghost2, ghost3};
+        TextureRegion[] ghostKing = {ghostking1, ghostking2, ghostking3};
+        TextureRegion[] ghostNinja = {ghostninja1, ghostninja2, ghostninja3};
+        TextureRegion[] ghostPirate = {ghostpirate1, ghostpirate2, ghostpirate3};
+        //TextureRegion[] ghostpolice = {ghostpolice1, ghostpolice2, ghostpolice3};
+        ghostAnimation = new Animation(0.3f, ghost);
+        ghostPirateAnimation = new Animation(0.3f, ghostPirate);
+        ghostNinjaAnimation = new Animation(0.3f, ghostNinja);
+        ghostKingAnimation = new Animation(0.3f, ghostKing);
         ghostAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        ghostPirateAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        ghostNinjaAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        ghostKingAnimation.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+
     }
+
 
     private static void loadTextures() {
         //GAMEOBJECTS
@@ -146,12 +205,8 @@ public class AssetLoader {
         ghost1 = new TextureRegion(texture, 0, 3712, 128, 128);
         ghost2 = new TextureRegion(texture, 128, 3712, 128, 128);
         ghost3 = new TextureRegion(texture, 256, 3712, 128, 128);
-        basicGhostDead = new TextureRegion(texture, 384, 3712, 128, 128);
-        basicGhostSpooking = new TextureRegion(texture, 512, 3712, 128, 128);
-        ghostDead = basicGhostDead;
-        ghostSpooking = basicGhostSpooking;
-
-
+        ghostDead = new TextureRegion(texture, 384, 3712, 128, 128);
+        ghostSpooking = new TextureRegion(texture, 512, 3712, 128, 128);
     }
 
     public static void loadKing() {
@@ -190,39 +245,6 @@ public class AssetLoader {
 
     }
 
-    public static void selectSkin(TextureRegion[] ghosts,
-                                  TextureRegion[] ghostking,
-                                  TextureRegion[] ghostninja,
-                                  TextureRegion[] ghostpirate,
-                                  TextureRegion[] ghostpolice) {
-
-        if (prefs.getInteger("texture") == 1) {
-            ghostAnimation = new Animation(0.3f, ghosts);
-            ghostSpooking = basicGhostSpooking;
-            ghostDead = basicGhostDead;
-
-        } else if (prefs.getInteger("texture") == 2) {
-            ghostAnimation = new Animation<TextureRegion>(0.3f, ghostking);
-            ghostSpooking = ghostkingSpooking;
-            ghostDead = ghostkingDead;
-
-        } else if (prefs.getInteger("texture") == 3) {
-            ghostAnimation = new Animation<TextureRegion>(0.3f, ghostninja);
-            ghostSpooking = ghostninjaSpooking;
-            ghostDead = ghostninjaDead;
-
-        } else if (prefs.getInteger("texture") == 4) {
-            ghostAnimation = new Animation<TextureRegion>(0.3f, ghostpirate);
-            ghostSpooking = ghostpirateSpooking;
-            ghostDead = ghostpirateDead;
-
-        } else if (prefs.getInteger("texture") == 5) {
-            ghostAnimation = new Animation<TextureRegion>(0.3f, ghostpolice);
-            ghostSpooking = ghostpoliceSpooking;
-            ghostDead = ghostpoliceDead;
-        }
-    }
-
     public static void loadAudio() {
         dead = Gdx.audio.newSound(Gdx.files.internal("sounds/dead.wav"));
         jump = Gdx.audio.newSound(Gdx.files.internal("sounds/jump.wav"));
@@ -235,11 +257,9 @@ public class AssetLoader {
         menuclick2 = Gdx.audio.newSound(Gdx.files.internal("sounds/menuclick2.wav"));
         mobjump = Gdx.audio.newSound(Gdx.files.internal("sounds/jumpingmob_jump.wav"));
         theme = Gdx.audio.newMusic(Gdx.files.internal("sounds/spookyghost_theme.mp3"));
-        soundMuted = prefs.getBoolean("sound");
-        musicMuted = prefs.getBoolean("music");
         theme.setVolume(0.5f);
         theme.setLooping(true);
-        if (!musicMuted) theme.play();
+        if (!DataHandler.musicMuted) theme.play();
     }
 
     private static void loadFont() {
@@ -250,14 +270,6 @@ public class AssetLoader {
         font3 = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font4 = new BitmapFont(Gdx.files.internal("data/font5.fnt"));
         font3.getData().setScale(0.7f, 0.7f);
-    }
-
-    private static void loadData() {
-
-        pirateUnlocked = prefs.getBoolean("pirateUnlocked");
-        ninjaUnlocked = prefs.getBoolean("ninjaUnlocked");
-        kingUnlocked = prefs.getBoolean("kingUnlocked");
-
     }
 
     public static void dispose() {
@@ -277,42 +289,49 @@ public class AssetLoader {
         font2.dispose();
         font3.dispose();
         font4.dispose();
-
     }
 
-    public static void muteSound() {
+    public static TextureRegion getAnimation(float runTime){
 
-        if (!soundMuted) {
-            soundMuted = true;
-            prefs.putBoolean("sound", true);
-
-        } else {
-            soundMuted = false;
-            prefs.putBoolean("sound", false);
-
+        if(DataHandler.selectedCharacter == 0){
+            return ghostAnimation.getKeyFrame(runTime);
+        } else if(DataHandler.selectedCharacter == 1){
+            return ghostPirateAnimation.getKeyFrame(runTime);
+        } else if(DataHandler.selectedCharacter == 2){
+            return ghostNinjaAnimation.getKeyFrame(runTime);
+        } else if(DataHandler.selectedCharacter == 3){
+            return ghostKingAnimation.getKeyFrame(runTime);
         }
-
-        prefs.flush();
-
+        return null;
     }
 
-    public static void muteMusic() {
+    public static TextureRegion getDeadTexture(){
 
-        if (!musicMuted) {
-            musicMuted = true;
-            theme.setVolume(0);
-            prefs.putBoolean("music", true);
-
-        } else {
-            musicMuted = false;
-            prefs.putBoolean("music", false);
-            theme.setVolume(0.5f);
-            theme.play();
-
+        if(DataHandler.selectedCharacter == 0){
+            return ghostDead;
+        } else if(DataHandler.selectedCharacter == 1){
+            return ghostpirateDead;
+        } else if(DataHandler.selectedCharacter == 2){
+            return ghostninjaDead;
+        } else if(DataHandler.selectedCharacter == 3){
+            return ghostkingDead;
         }
-
-        prefs.flush();
-
+        return null;
     }
 
+    public static TextureRegion getSpookingTexture(){
+
+        if(DataHandler.selectedCharacter == 0){
+            return ghostSpooking;
+        } else if(DataHandler.selectedCharacter == 1){
+            return ghostpirateSpooking;
+        } else if(DataHandler.selectedCharacter == 2){
+            return ghostninjaSpooking;
+        } else if(DataHandler.selectedCharacter == 3){
+            return ghostkingSpooking;
+        }
+        return null;
+    }
 }
+
+
