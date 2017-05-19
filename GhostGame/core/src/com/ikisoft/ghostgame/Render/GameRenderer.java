@@ -404,6 +404,7 @@ public class GameRenderer {
 
 
     //wow this code sucks
+    //todo fix this fuckign mess
     private void drawSkinIcons() {
 
         if (DataHandler.selectedCharacterPreview == 0) {

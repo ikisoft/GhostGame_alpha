@@ -33,7 +33,7 @@ public class AndroidLauncher extends AndroidApplication {
 		View gameView = initializeForView(new SpookyGhost(), config);
 		layout.addView(gameView);
 
-	/*	final AdView adView = new AdView(this);
+		final AdView adView = new AdView(this);
 
 		adView.setAdSize(AdSize.SMART_BANNER);
 		adView.setAdUnitId("ca-app-pub-9173827918950149/2520147716");
@@ -53,7 +53,7 @@ public class AndroidLauncher extends AndroidApplication {
 				adView.setVisibility(View.VISIBLE);
 				adView.bringToFront();
 			}
-		});*/
+		});
 
 		setContentView(layout);
 

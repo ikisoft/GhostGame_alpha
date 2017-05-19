@@ -289,6 +289,7 @@ public class AssetLoader {
         font2.dispose();
         font3.dispose();
         font4.dispose();
+
     }
 
     public static TextureRegion getAnimation(float runTime){

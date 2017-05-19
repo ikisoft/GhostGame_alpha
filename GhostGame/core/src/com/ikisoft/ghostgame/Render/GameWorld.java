@@ -36,7 +36,7 @@ public class GameWorld {
     private Menu menu;
     private Options options;
     private TutorialScreen tutorialScreen;
-    private int score, exp, lvl, spookedMobs;
+    private int score, exp, lvl, spookedMobs, totalSpookedMobs;
     private float exptolvl, thislvlexp, nextlvlexp;
     private boolean deathsoundPlayed, gameover, scoreSaved, dataSaved, dev, lvlUp,
     pirateUnlocked, ninjaUnlocked, kingUnlocked;
@@ -70,6 +70,7 @@ public class GameWorld {
         gameover = false;
         dev = false;
         distance = 0;
+        totalSpookedMobs = DataHandler.spookedMobs;
 
         //test
 
@@ -193,7 +194,6 @@ public class GameWorld {
         }
 
         if (!dataSaved) {
-
             if(DataHandler.selectedCharacter == 1){
                 //if pirate multiply exp at the end of run by 1.5
                 DataHandler.exp = (int) (DataHandler.exp + (exp + (score * 10)) * 1.5);
@@ -211,13 +211,17 @@ public class GameWorld {
             thislvlexp = (float) Math.pow(lvl, 2) * 100;
             nextlvlexp = (float) Math.pow(lvl + 1, 2) * 100;
             exptolvl = (DataHandler.exp - thislvlexp) / (nextlvlexp - thislvlexp);
+
+
             DataHandler.spookedMobs += spookedMobs;
 
             if(!DataHandler.pirateUnlocked)unlockPirate();
             if(!DataHandler.ninjaUnlocked)unlockNinja();
             if(!DataHandler.kingUnlocked)unlockKing();
 
+            DataHandler.save();
             dataSaved = true;
+
         }
 
         deathScreen.update(delta);
@@ -260,6 +264,7 @@ public class GameWorld {
         score = 0;
         exp = 0;
         distance = 0;
+        spookedMobs = 0;
         deathsoundPlayed = false;
         gameover = false;
         scoreSaved = false;

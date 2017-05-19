@@ -38,6 +38,7 @@ public class DataHandler {
         soundMuted = prefs.getBoolean("soundMuted");
         musicMuted = prefs.getBoolean("musicMuted");
 
+
     }
 
     public static void save(){
